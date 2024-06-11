@@ -1,0 +1,82 @@
+package analisis;
+
+//importaciones
+import java_cup.runtime.Symbol;
+import java.util.LinkedList;
+import abstracto.Instruccion;
+import simbolo.Tipo;
+import simbolo.tipoDato;
+
+//instrucciones
+import instrucciones.Print;
+
+//expresiones
+import expresiones.Nativo;
+import expresiones.Aritmeticas;
+import expresiones.OperadoresAritmeticos;
+
+// parser
+parser code
+{:
+    scanner s;
+    parser(scanner s){this.s = s;}
+    
+    public void syntax_error(Symbol s){
+        System.out.println("Error Sintactico en la linea " +
+        (s.left) + " y columna " + (s.right) +
+        ". No se esperaba el componente: " + (s.value) + ".");
+    }
+
+    public void unrecovered_syntax_error (Symbol s){
+        System.out.println("Error Sintactico no recuperable en la linea" +
+        (s.left) + " y columna " + (s.right) +
+        ". No se esperaba el componente: " + (s.value) + ".");
+    }
+
+:}
+
+action code
+{:
+:}
+
+//terminales
+terminal String CADENA, ENTERO, DECIMAL;
+terminal FINCADENA, IMPRIMIR;
+terminal PAR1, PAR2;
+terminal MAS, MENOS, UMENOS, DOBLE_ASTERISCO, BARRA, ASTERISCO, PORCENTUAL;
+
+//no terminales
+nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
+nonterminal Instruccion INSTRUCCION;
+nonterminal Instruccion EXPRESION;
+
+precedence left MAS, MENOS;
+precedence left ASTERISCO, BARRA, PORCENTUAL;
+precedence nonassoc DOBLE_ASTERISCO;
+precedence right UMENOS; // Para la negación unaria
+
+
+
+start with INICIO;
+
+INICIO ::= INSTRUCCIONES:a      {:   RESULT = a;   :}
+;
+
+INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b); :}
+                | INSTRUCCION:a                     {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+;
+
+INSTRUCCION ::= IMPRIMIR PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
+;
+
+EXPRESION ::= MENOS EXPRESION:a                     {: RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright); :} %prec UMENOS
+            | EXPRESION:a DOBLE_ASTERISCO EXPRESION:b {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); :}
+            | EXPRESION:a PORCENTUAL EXPRESION:b        {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); :}
+            | EXPRESION:a ASTERISCO EXPRESION:b         {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); :}
+            | EXPRESION:a BARRA EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); :}
+            | EXPRESION:a MAS EXPRESION:b               {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :}
+            | EXPRESION:a MENOS EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :}
+            | ENTERO:a      {: RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright); :}
+            | DECIMAL:a     {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}
+            | CADENA:a      {: RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright); :}
+;
