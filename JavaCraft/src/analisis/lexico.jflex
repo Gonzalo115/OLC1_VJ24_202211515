@@ -44,19 +44,36 @@ BARRA="/"
 
 BLANCOS=[\ \r\t\f\n]+
 
+IGUAL="="
+MENOR="<"
+MAYOR=">"
+NEGACION="!"
+PIPE="|"
+AMPERSNAD=="&"
+CIRCUNFLEJO="^"
+
 
 ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
 CADENA = [\"]([^\"])*[\"]
+BOOLEANO = ((true)|(false))
+CARACTER= ('[^\ \r\t\f\n]')
 
 //palabras reservadas
-IMPRIMIR="imprimir"
+IMPRIMIR="println"
 
 %%
 <YYINITIAL> {IMPRIMIR} {return new Symbol(sym.IMPRIMIR, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {DECIMAL} {return new Symbol(sym.DECIMAL, yyline, yycolumn,yytext());}
 <YYINITIAL> {ENTERO} {return new Symbol(sym.ENTERO, yyline, yycolumn,yytext());}
+<YYINITIAL> {BOOLEANO} {return new Symbol(sym.BOOLEANO, yyline, yycolumn,yytext());}
+
+<YYINITIAL> {CARACTER} {
+    String caracter = yytext();
+    caracter = caracter.substring(1, caracter.length()-1);
+    return new Symbol(sym.CARACTER, yyline, yycolumn,caracter);
+    }
 
 <YYINITIAL> {CADENA} {
     String cadena = yytext();
@@ -80,5 +97,12 @@ IMPRIMIR="imprimir"
 <YYINITIAL> {DOBLE_ASTERISCO} {return new Symbol(sym.DOBLE_ASTERISCO, yyline, yycolumn,yytext());}
 <YYINITIAL> {ASTERISCO} {return new Symbol(sym.ASTERISCO, yyline, yycolumn,yytext());}
 
+<YYINITIAL> {IGUAL} {return new Symbol(sym.IGUAL, yyline, yycolumn,yytext());}
+<YYINITIAL> {MENOR} {return new Symbol(sym.MENOR, yyline, yycolumn,yytext());}
+<YYINITIAL> {MAYOR} {return new Symbol(sym.MAYOR, yyline, yycolumn,yytext());}
+<YYINITIAL> {NEGACION} {return new Symbol(sym.NEGACION, yyline, yycolumn,yytext());}
+<YYINITIAL> {PIPE} {return new Symbol(sym.PIPE, yyline, yycolumn,yytext());}
+<YYINITIAL> {AMPERSNAD} {return new Symbol(sym.AMPERSNAD, yyline, yycolumn,yytext());}
+<YYINITIAL> {CIRCUNFLEJO} {return new Symbol(sym.CIRCUNFLEJO, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {BLANCOS} {}

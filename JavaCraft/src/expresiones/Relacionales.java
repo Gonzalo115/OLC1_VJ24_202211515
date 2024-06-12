@@ -30,57 +30,594 @@ public class Relacionales extends Instruccion {
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-        var condIzq = this.condicion1.interpretar(arbol, tabla);
-        if (condIzq instanceof Errores) {
-            return condIzq;
+        var cond_Izq = this.condicion1.interpretar(arbol, tabla);
+        if (cond_Izq instanceof Errores) {
+            return cond_Izq;
         }
 
-        var condDer = this.condicion2.interpretar(arbol, tabla);
-        if (condDer instanceof Errores) {
-            return condDer;
+        var cond_Der = this.condicion2.interpretar(arbol, tabla);
+        if (cond_Der instanceof Errores) {
+            return cond_Der;
         }
 
         return switch (relacional) {
             case IGUAL ->
-                this.equals(condIzq, condDer);
-
+                this.igual(cond_Izq, cond_Der);
+            case NOIGUAL ->
+                this.no_igual(cond_Izq, cond_Der);
+            case MENOR ->
+                this.menor(cond_Izq, cond_Der);
+            case MAYOR ->
+                this.mayor(cond_Izq, cond_Der);
+            case IGUAL_MENOR ->
+                this.igual_menor(cond_Izq, cond_Der);
+            case IGUAL_MAYOR ->
+                this.igual_mayor(cond_Izq, cond_Der);
             default ->
                 new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
         };
     }
 
-    public Object equals(Object comp1, Object comp2) {
-        var comparando1 = this.condicion1.tipo.getTipo();
-        var comparando2 = this.condicion2.tipo.getTipo();
+    public Object igual(Object cond_Izq, Object cond_Der) {
+        var comparandoA = this.condicion1.tipo.getTipo();
+        var comparandoB = this.condicion2.tipo.getTipo();
 
-        return switch (comparando1) {
+        return switch (comparandoA) {
             case tipoDato.ENTERO ->
-                switch (comparando2) {
+                switch (comparandoB) {
                     case tipoDato.ENTERO ->
-                        (int) comp1 == (int) comp2;
+                        (int) cond_Izq == (int) cond_Der;
                     case tipoDato.DECIMAL ->
-                        (int) comp1 == (double) comp2;
+                        (int) cond_Izq == (double) cond_Der;
+                    case tipoDato.CARACTER ->
+                        (int) cond_Izq == (int) cond_Der.toString().charAt(0);
                     default ->
-                        new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        new Errores("SEMANTICO", "No se pueden comparar '=' los tipos de datos ENTERO y " + comparandoB, this.linea, this.col);
                 };
             case tipoDato.DECIMAL ->
-                switch (comparando2) {
+                switch (comparandoB) {
                     case tipoDato.ENTERO ->
-                        (double) comp1 == (int) comp2;
+                        (double) cond_Izq == (int) cond_Der;
                     case tipoDato.DECIMAL ->
-                        (double) comp1 == (double) comp2;
+                        (double) cond_Izq == (double) cond_Der;
+                    case tipoDato.CARACTER ->
+                        (double) cond_Izq == (int) cond_Der.toString().charAt(0);
                     default ->
-                        new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        new Errores("SEMANTICO", "No se pueden comparar '=' los tipos de datos DECIMAL y " + comparandoB, this.linea, this.col);
+                };
+            case tipoDato.BOOLEANO ->
+                switch (comparandoB) {
+                    case tipoDato.BOOLEANO ->
+                        cond_Izq.toString().equalsIgnoreCase(cond_Der.toString());
+                    default ->
+                        new Errores("SEMANTICO", "No se pueden comparar '=' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
+                };
+            case tipoDato.CARACTER ->
+                switch (comparandoB) {
+                    case tipoDato.ENTERO ->
+                        (int) cond_Izq == (int) cond_Der;
+                    case tipoDato.DECIMAL ->
+                        (int) cond_Izq == (double) cond_Der;
+                    case tipoDato.CARACTER ->
+                        (int) cond_Izq.toString().charAt(0) == (int) cond_Der.toString().charAt(0);
+                    default ->
+                        new Errores("SEMANTICO", "No se pueden comparar '=' los tipos de dato CARACTER y " + comparandoB, this.linea, this.col);
                 };
             case tipoDato.CADENA ->
-                switch (comparando2) {
+                switch (comparandoB) {
                     case tipoDato.CADENA ->
-                        comp1.toString().equalsIgnoreCase(comp2.toString());
+                        cond_Izq.toString().equalsIgnoreCase(cond_Der.toString());
                     default ->
-                        new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        new Errores("SEMANTICO", "No se pueden comparar '=' los tipos de dato CADENA y " + comparandoB, this.linea, this.col);
+
                 };
             default ->
                 new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
         };
+    }
+
+    public Object no_igual(Object cond_Izq, Object cond_Der) {
+        var comparandoA = this.condicion1.tipo.getTipo();
+        var comparandoB = this.condicion2.tipo.getTipo();
+
+        return switch (comparandoA) {
+            case tipoDato.ENTERO ->
+                switch (comparandoB) {
+                    case tipoDato.ENTERO ->
+                        (int) cond_Izq != (int) cond_Der;
+                    case tipoDato.DECIMAL ->
+                        (int) cond_Izq != (double) cond_Der;
+                    case tipoDato.CARACTER ->
+                        (int) cond_Izq != (int) cond_Der.toString().charAt(0);
+                    default ->
+                        new Errores("SEMANTICO", "No se pueden comparar '!=' los tipos de datos ENTERO y " + comparandoB, this.linea, this.col);
+                };
+            case tipoDato.DECIMAL ->
+                switch (comparandoB) {
+                    case tipoDato.ENTERO ->
+                        (double) cond_Izq != (int) cond_Der;
+                    case tipoDato.DECIMAL ->
+                        (double) cond_Izq != (double) cond_Der;
+                    case tipoDato.CARACTER ->
+                        (double) cond_Izq != (int) cond_Der.toString().charAt(0);
+                    default ->
+                        new Errores("SEMANTICO", "No se pueden comparar '!=' los tipos de datos DECIMAL y " + comparandoB, this.linea, this.col);
+                };
+            case tipoDato.BOOLEANO ->
+                switch (comparandoB) {
+                    case tipoDato.BOOLEANO ->
+                        !cond_Izq.toString().equalsIgnoreCase(cond_Der.toString());
+                    default ->
+                        new Errores("SEMANTICO", "No se pueden comparar '!=' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
+                };
+            case tipoDato.CARACTER ->
+                switch (comparandoB) {
+                    case tipoDato.ENTERO ->
+                        (int) cond_Izq.toString().charAt(0) != (int) cond_Der;
+                    case tipoDato.DECIMAL ->
+                        (int) cond_Izq.toString().charAt(0) != (double) cond_Der;
+                    case tipoDato.CARACTER ->
+                        (int) cond_Izq.toString().charAt(0) != (int) cond_Der.toString().charAt(0);
+                    default ->
+                        new Errores("SEMANTICO", "No se pueden comparar '!=' los tipos de dato CARACTER y " + comparandoB, this.linea, this.col);
+                };
+            case tipoDato.CADENA ->
+                switch (comparandoB) {
+                    case tipoDato.CADENA ->
+                        !cond_Izq.toString().equalsIgnoreCase(cond_Der.toString());
+                    default ->
+                        new Errores("SEMANTICO", "No se pueden comparar '!=' los tipos de dato CADENA y " + comparandoB, this.linea, this.col);
+
+                };
+            default ->
+                new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+        };
+    }
+
+    public Object menor(Object cond_Izq, Object cond_Der) {
+        var comparandoA = this.condicion1.tipo.getTipo();
+        var comparandoB = this.condicion2.tipo.getTipo();
+
+        switch (comparandoA) {
+            case tipoDato.ENTERO -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq < (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq < (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq < (int) cond_Der.toString().charAt(0);
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<' los tipos de datos ENTERO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+
+            }
+            case tipoDato.DECIMAL -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (double) cond_Izq < (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (double) cond_Izq < (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (double) cond_Izq < (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<' los tipos de datos DECIMAL y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.BOOLEANO -> {
+                switch (comparandoB) {
+                    case tipoDato.BOOLEANO -> {
+
+                        int int_Izq = 0;
+                        int int_Der = 1;
+
+                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        return int_Izq < int_Der;
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            case tipoDato.CARACTER -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq.toString().charAt(0) < (int) cond_Der;
+
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq.toString().charAt(0) < (double) cond_Der;
+
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq.toString().charAt(0) < (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<' los tipos de dato CARACTER y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.CADENA -> {
+                switch (comparandoB) {
+                    case tipoDato.CADENA -> {
+                        String S_cond_Izq = cond_Izq.toString();
+                        String S_cond_Der = cond_Der.toString();
+
+                        return S_cond_Izq.length() < S_cond_Der.length();
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<' los tipos de dato CADENA y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            default -> {
+                return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+            }
+        }
+    }
+
+    public Object mayor(Object cond_Izq, Object cond_Der) {
+        var comparandoA = this.condicion1.tipo.getTipo();
+        var comparandoB = this.condicion2.tipo.getTipo();
+
+        switch (comparandoA) {
+            case tipoDato.ENTERO -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq > (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq > (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq > (int) cond_Der.toString().charAt(0);
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>' los tipos de datos ENTERO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+
+            }
+            case tipoDato.DECIMAL -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (double) cond_Izq > (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (double) cond_Izq > (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (double) cond_Izq > (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>' los tipos de datos DECIMAL y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.BOOLEANO -> {
+                switch (comparandoB) {
+                    case tipoDato.BOOLEANO -> {
+
+                        int int_Izq = 0;
+                        int int_Der = 1;
+
+                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        return int_Izq > int_Der;
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            case tipoDato.CARACTER -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq.toString().charAt(0) > (int) cond_Der;
+
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq.toString().charAt(0) > (double) cond_Der;
+
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq.toString().charAt(0) > (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>' los tipos de dato CARACTER y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.CADENA -> {
+                switch (comparandoB) {
+                    case tipoDato.CADENA -> {
+                        String S_cond_Izq = cond_Izq.toString();
+                        String S_cond_Der = cond_Der.toString();
+
+                        return S_cond_Izq.length() > S_cond_Der.length();
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>' los tipos de dato CADENA y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            default -> {
+                return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+            }
+        }
+    }
+
+    public Object igual_menor(Object cond_Izq, Object cond_Der) {
+        var comparandoA = this.condicion1.tipo.getTipo();
+        var comparandoB = this.condicion2.tipo.getTipo();
+
+        switch (comparandoA) {
+            case tipoDato.ENTERO -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq <= (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq <= (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq <= (int) cond_Der.toString().charAt(0);
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<=' los tipos de datos ENTERO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+
+            }
+            case tipoDato.DECIMAL -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (double) cond_Izq <= (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (double) cond_Izq <= (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (double) cond_Izq <= (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<=' los tipos de datos DECIMAL y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.BOOLEANO -> {
+                switch (comparandoB) {
+                    case tipoDato.BOOLEANO -> {
+
+                        int int_Izq = 0;
+                        int int_Der = 1;
+
+                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        return int_Izq <= int_Der;
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<=' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            case tipoDato.CARACTER -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq.toString().charAt(0) <= (int) cond_Der;
+
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq.toString().charAt(0) <= (double) cond_Der;
+
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq.toString().charAt(0) <= (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<=' los tipos de dato CARACTER y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.CADENA -> {
+                switch (comparandoB) {
+                    case tipoDato.CADENA -> {
+                        String S_cond_Izq = cond_Izq.toString();
+                        String S_cond_Der = cond_Der.toString();
+
+                        return S_cond_Izq.length() <= S_cond_Der.length();
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '<=' los tipos de dato CADENA y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            default -> {
+                return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+            }
+        }
+    }
+
+    public Object igual_mayor(Object cond_Izq, Object cond_Der) {
+        var comparandoA = this.condicion1.tipo.getTipo();
+        var comparandoB = this.condicion2.tipo.getTipo();
+        switch (comparandoA) {
+            case tipoDato.ENTERO -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq >= (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq >= (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq >= (int) cond_Der.toString().charAt(0);
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>=' los tipos de datos ENTERO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+
+            }
+            case tipoDato.DECIMAL -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (double) cond_Izq >= (int) cond_Der;
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (double) cond_Izq >= (double) cond_Der;
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (double) cond_Izq >= (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>=' los tipos de datos DECIMAL y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.BOOLEANO -> {
+                switch (comparandoB) {
+                    case tipoDato.BOOLEANO -> {
+
+                        int int_Izq = 0;
+                        int int_Der = 1;
+
+                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                            int_Izq = 1;
+
+                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                            int_Der = 0;
+                        } else {
+                            return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+                        }
+
+                        return int_Izq >= int_Der;
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>=' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            case tipoDato.CARACTER -> {
+                switch (comparandoB) {
+                    case tipoDato.ENTERO -> {
+                        return (int) cond_Izq.toString().charAt(0) >= (int) cond_Der;
+
+                    }
+                    case tipoDato.DECIMAL -> {
+                        return (int) cond_Izq.toString().charAt(0) >= (double) cond_Der;
+
+                    }
+                    case tipoDato.CARACTER -> {
+                        return (int) cond_Izq.toString().charAt(0) >= (int) cond_Der.toString().charAt(0);
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>=' los tipos de dato CARACTER y " + comparandoB, this.linea, this.col);
+
+                    }
+                }
+            }
+            case tipoDato.CADENA -> {
+                switch (comparandoB) {
+                    case tipoDato.CADENA -> {
+                        String S_cond_Izq = cond_Izq.toString();
+                        String S_cond_Der = cond_Der.toString();
+
+                        return S_cond_Izq.length() >= S_cond_Der.length();
+
+                    }
+                    default -> {
+                        return new Errores("SEMANTICO", "No se pueden comparar '>=' los tipos de dato CADENA y " + comparandoB, this.linea, this.col);
+                    }
+                }
+            }
+            default -> {
+                return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
+            }
+        }
     }
 }

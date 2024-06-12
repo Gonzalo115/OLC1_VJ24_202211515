@@ -88,7 +88,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 + (int) op2;
+                        return (int) op1 + (int) op2.toString().charAt(0);
                     }
                     case tipoDato.CADENA -> {
                         this.tipo.setTipo(tipoDato.CADENA);
@@ -111,7 +111,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 + (int) op2;
+                        return (double) op1 + (int) op2.toString().charAt(0);
                     }
                     case tipoDato.CADENA -> {
                         this.tipo.setTipo(tipoDato.CADENA);
@@ -137,15 +137,15 @@ public class Aritmeticas extends Instruccion {
                 switch (tipo2) {
                     case tipoDato.ENTERO -> {
                         this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 + (int) op2;
+                        return (int) op1.toString().charAt(0) + (int) op2;
                     }
                     case tipoDato.DECIMAL -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 + (double) op2;
+                        return (int) op1.toString().charAt(0) + (double) op2;
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.CADENA);
-                        return op1.toString() + op2.toString();
+                        return (int) op1.toString().charAt(0) + (int) op2.toString().charAt(0);
                     }
                     case tipoDato.CADENA -> {
                         this.tipo.setTipo(tipoDato.CADENA);
@@ -184,7 +184,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 - (int) op2;
+                        return (int) op1 - (int) op2.toString().charAt(0);
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Resta entre los tipos ENTERO y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -203,7 +203,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 - (int) op2;
+                        return (double) op1 - (int) op2.toString().charAt(0);
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Resta entre los tipos DECIMAL y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -214,11 +214,11 @@ public class Aritmeticas extends Instruccion {
                 switch (tipo2) {
                     case tipoDato.ENTERO -> {
                         this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 - (int) op2;
+                        return (int) op1.toString().charAt(0) - (int) op2;
                     }
                     case tipoDato.DECIMAL -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 - (double) op2;
+                        return (int) op1.toString().charAt(0) - (double) op2;
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Resta entre los tipos CARACTER y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -249,7 +249,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 * (int) op2;
+                        return (int) op1 * (int) op2.toString().charAt(0);
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Multiplicacion entre los tipos ENTERO y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -268,7 +268,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 * (int) op2;
+                        return (double) op1 * (int) op2.toString().charAt(0);
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Multiplicacion entre los tipos DECIMAL y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -279,11 +279,11 @@ public class Aritmeticas extends Instruccion {
                 switch (tipo2) {
                     case tipoDato.ENTERO -> {
                         this.tipo.setTipo(tipoDato.ENTERO);
-                        return (int) op1 * (int) op2;
+                        return (int) op1.toString().charAt(0) * (int) op2;
                     }
                     case tipoDato.DECIMAL -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 * (double) op2;
+                        return(int) op1.toString().charAt(0) * (double) op2;
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Multiplicacion entre los tipos CARACTER y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -300,17 +300,16 @@ public class Aritmeticas extends Instruccion {
     public Object division(Object op1, Object op2) {
         var tipo1 = this.operando1.tipo.getTipo();
         var tipo2 = this.operando2.tipo.getTipo();
-        
-        if (op2.toString().equals("0")){
-            return new Errores("SEMANTICO", "Division entre 0 es invalida", this.linea, this.col);   
-        } 
-        
+
+        if (op2.toString().equals("0")) {
+            return new Errores("SEMANTICO", "Division entre 0 es invalida", this.linea, this.col);
+        }
+
         switch (tipo1) {
             case tipoDato.ENTERO -> {
                 switch (tipo2) {
                     case tipoDato.ENTERO -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        System.out.println(op1.toString()+op2.toString());
                         return (double) (int) op1 / (int) op2;
                     }
                     case tipoDato.DECIMAL -> {
@@ -319,7 +318,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 / (int) op2;
+                        return (double) (int) op1 / (int) op2.toString().charAt(0);
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Division entre los tipos ENTERO y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -338,7 +337,7 @@ public class Aritmeticas extends Instruccion {
                     }
                     case tipoDato.CARACTER -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (double) op1 / (int) op2;
+                        return (double) op1 / (int) op2.toString().charAt(0);
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Division entre los tipos DECIMAL y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -349,11 +348,11 @@ public class Aritmeticas extends Instruccion {
                 switch (tipo2) {
                     case tipoDato.ENTERO -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 / (int) op2;
+                        return (double) (int) op1.toString().charAt(0) / (int) op2;
                     }
                     case tipoDato.DECIMAL -> {
                         this.tipo.setTipo(tipoDato.DECIMAL);
-                        return (int) op1 / (double) op2;
+                        return (int) op1.toString().charAt(0) / (double) op2;
                     }
                     default -> {
                         return new Errores("SEMANTICO", "Division entre los tipos CARACTER y " + tipo2 + " no es permitida", this.linea, this.col);
@@ -366,8 +365,8 @@ public class Aritmeticas extends Instruccion {
             }
         }
     }
-    
-    public Object potencia(Object op1, Object op2){
+
+    public Object potencia(Object op1, Object op2) {
         var tipo1 = this.operando1.tipo.getTipo();
         var tipo2 = this.operando2.tipo.getTipo();
 
@@ -409,7 +408,7 @@ public class Aritmeticas extends Instruccion {
         }
     }
 
-        public Object modulo(Object op1, Object op2){
+    public Object modulo(Object op1, Object op2) {
         var tipo1 = this.operando1.tipo.getTipo();
         var tipo2 = this.operando2.tipo.getTipo();
 
@@ -450,7 +449,7 @@ public class Aritmeticas extends Instruccion {
             }
         }
     }
-        
+
     public Object negacion(Object op1) {
         var opU = this.operandoUnico.tipo.getTipo();
         switch (opU) {
