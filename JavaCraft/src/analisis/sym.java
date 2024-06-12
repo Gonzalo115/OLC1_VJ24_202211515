@@ -33,7 +33,6 @@ public class sym {
   public static final int EOF = 0;
   public static final int ASTERISCO = 16;
   public static final int DOBLE_ASTERISCO = 14;
-  public static final int AMPERSNAD = 29;
   public static final int CIRCUNFLEJO = 30;
   public static final int MENOR_Q = 24;
   public static final int error = 1;
@@ -41,6 +40,7 @@ public class sym {
   public static final int PAR1 = 9;
   public static final int XOR = 33;
   public static final int ENTERO = 4;
+  public static final int AMPERSAND = 29;
   public static final int MAS = 11;
   public static final int MAYOR_Q = 25;
   public static final String[] terminalNames = new String[] {
@@ -73,7 +73,7 @@ public class sym {
   "MENOR_I_Q",
   "MAYOR_I_Q",
   "PIPE",
-  "AMPERSNAD",
+  "AMPERSAND",
   "CIRCUNFLEJO",
   "OR",
   "AND",

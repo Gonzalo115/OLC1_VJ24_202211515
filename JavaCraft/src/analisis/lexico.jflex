@@ -38,8 +38,8 @@ ASTERISCO="*"
 DOBLE_ASTERISCO="**"
 PORCENTUAL="%"
 
-// COMENTARIO_LINEA = [//](.)*
-// COMENTARIO = [/\*][\s\S]*[\*/]
+// COMENTARIO_LINEA= (//[^\n]*)
+// COMENTARIO="/\\*[\\s\\S]*?\\*/"
 BARRA="/"
 
 BLANCOS=[\ \r\t\f\n]+
@@ -49,7 +49,7 @@ MENOR="<"
 MAYOR=">"
 NEGACION="!"
 PIPE="|"
-AMPERSNAD=="&"
+AMPERSAND="&"
 CIRCUNFLEJO="^"
 
 
@@ -102,7 +102,7 @@ IMPRIMIR="println"
 <YYINITIAL> {MAYOR} {return new Symbol(sym.MAYOR, yyline, yycolumn,yytext());}
 <YYINITIAL> {NEGACION} {return new Symbol(sym.NEGACION, yyline, yycolumn,yytext());}
 <YYINITIAL> {PIPE} {return new Symbol(sym.PIPE, yyline, yycolumn,yytext());}
-<YYINITIAL> {AMPERSNAD} {return new Symbol(sym.AMPERSNAD, yyline, yycolumn,yytext());}
+<YYINITIAL> {AMPERSAND} {return new Symbol(sym.AMPERSAND, yyline, yycolumn,yytext());}
 <YYINITIAL> {CIRCUNFLEJO} {return new Symbol(sym.CIRCUNFLEJO, yyline, yycolumn,yytext());}
 
 <YYINITIAL> {BLANCOS} {}

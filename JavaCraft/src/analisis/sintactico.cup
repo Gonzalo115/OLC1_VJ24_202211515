@@ -16,6 +16,9 @@ import expresiones.Aritmeticas;
 import expresiones.OperadoresAritmeticos;
 import expresiones.Relacionales;
 import expresiones.OperadoresRelacionales;
+import expresiones.Logicos;
+import expresiones.OperadoresLogicos;
+
 
 // parser
 parser code
@@ -53,7 +56,7 @@ terminal MAS, MENOS, UMENOS, DOBLE_ASTERISCO, BARRA, ASTERISCO, PORCENTUAL;
 terminal IGUAL, MENOR, MAYOR, NEGACION;
 terminal IGUAL_IGUAL, DESIGUAL, MENOR_Q, MAYOR_Q, MENOR_I_Q, MAYOR_I_Q;
 
-terminal PIPE, AMPERSNAD, CIRCUNFLEJO;
+terminal PIPE, AMPERSAND, CIRCUNFLEJO;
 terminal OR, AND, XOR, NOT;
 
 
@@ -100,6 +103,11 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | EXPRESION:a MENOR IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL_MENOR, aleft, aright); :} %prec MENOR_I_Q
             | EXPRESION:a MAYOR EXPRESION:b             {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright); :} %prec MAYOR_Q
             | EXPRESION:a MAYOR IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL_MAYOR, aleft, aright); :} %prec MAYOR_I_Q
+
+            | EXPRESION:a PIPE PIPE EXPRESION:b         {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); :} %prec OR
+            |EXPRESION:a AMPERSAND AMPERSAND EXPRESION:b{: RESULT = new Logicos(a, b, OperadoresLogicos.AND, aleft, aright); :} %prec AND
+            | EXPRESION:a CIRCUNFLEJO EXPRESION:b       {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); :} %prec XOR
+            | NEGACION EXPRESION:a              {: RESULT = new Logicos(a, OperadoresLogicos.NOT, aleft, aright); :} %prec NOT
             
             | ENTERO:a                                  {: RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright); :}
             | DECIMAL:a                                 {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}
