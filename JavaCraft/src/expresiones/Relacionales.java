@@ -88,7 +88,8 @@ public class Relacionales extends Instruccion {
             case tipoDato.BOOLEANO ->
                 switch (comparandoB) {
                     case tipoDato.BOOLEANO ->
-                        cond_Izq.toString().equalsIgnoreCase(cond_Der.toString());
+                
+                        toBoolean(cond_Izq) == toBoolean(cond_Der);
                     default ->
                         new Errores("SEMANTICO", "No se pueden comparar '=' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
                 };
@@ -146,7 +147,7 @@ public class Relacionales extends Instruccion {
             case tipoDato.BOOLEANO ->
                 switch (comparandoB) {
                     case tipoDato.BOOLEANO ->
-                        !cond_Izq.toString().equalsIgnoreCase(cond_Der.toString());
+                        toBoolean(cond_Izq) != toBoolean(cond_Der);
                     default ->
                         new Errores("SEMANTICO", "No se pueden comparar '!=' los tipos de dato BOOLEANO y " + comparandoB, this.linea, this.col);
                 };
@@ -219,21 +220,20 @@ public class Relacionales extends Instruccion {
                     case tipoDato.BOOLEANO -> {
 
                         int int_Izq = 0;
-                        int int_Der = 1;
-
-                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                        int int_Der = 0;
+                        
+                        if (toBoolean(cond_Izq)== true) {
                             int_Izq = 1;
 
-                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Izq)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
                         }
 
-                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                        if (toBoolean(cond_Der)== true) {
                             int_Izq = 1;
-
-                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Der)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
@@ -331,21 +331,20 @@ public class Relacionales extends Instruccion {
                     case tipoDato.BOOLEANO -> {
 
                         int int_Izq = 0;
-                        int int_Der = 1;
-
-                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                        int int_Der = 0;
+                        
+                        if (toBoolean(cond_Izq)== true) {
                             int_Izq = 1;
 
-                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Izq)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
                         }
 
-                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                        if (toBoolean(cond_Der)== true) {
                             int_Izq = 1;
-
-                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Der)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
@@ -443,21 +442,20 @@ public class Relacionales extends Instruccion {
                     case tipoDato.BOOLEANO -> {
 
                         int int_Izq = 0;
-                        int int_Der = 1;
-
-                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                        int int_Der = 0;
+                        
+                        if (toBoolean(cond_Izq)== true) {
                             int_Izq = 1;
 
-                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Izq)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
                         }
 
-                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                        if (toBoolean(cond_Der)== true) {
                             int_Izq = 1;
-
-                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Der)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
@@ -554,21 +552,20 @@ public class Relacionales extends Instruccion {
                     case tipoDato.BOOLEANO -> {
 
                         int int_Izq = 0;
-                        int int_Der = 1;
-
-                        if (cond_Izq.toString().equalsIgnoreCase("true")) {
+                        int int_Der = 0;
+                        
+                        if (toBoolean(cond_Izq)== true) {
                             int_Izq = 1;
 
-                        } else if (cond_Izq.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Izq)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
                         }
 
-                        if (cond_Der.toString().equalsIgnoreCase("true")) {
+                        if (toBoolean(cond_Der)== true) {
                             int_Izq = 1;
-
-                        } else if (cond_Der.toString().equalsIgnoreCase("false")) {
+                        } else if (toBoolean(cond_Der)== false) {
                             int_Der = 0;
                         } else {
                             return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
@@ -618,6 +615,14 @@ public class Relacionales extends Instruccion {
             default -> {
                 return new Errores("SEMANTICO", "Relacional Invalido", this.linea, this.col);
             }
+        }
+    }
+
+    public static boolean toBoolean(Object obj) {
+        if (obj instanceof String) {
+            return Boolean.valueOf(((String) obj).toLowerCase());
+        } else {
+            return (boolean) obj;
         }
     }
 }

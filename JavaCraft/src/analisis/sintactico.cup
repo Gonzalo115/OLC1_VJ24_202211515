@@ -90,12 +90,12 @@ INSTRUCCION ::= IMPRIMIR PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new 
 ;
 
 EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright); :} %prec UMENOS
-            | EXPRESION:a DOBLE_ASTERISCO EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); :}
-            | EXPRESION:a PORCENTUAL EXPRESION:b        {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); :}
-            | EXPRESION:a ASTERISCO EXPRESION:b         {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); :}
-            | EXPRESION:a BARRA EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); :}
-            | EXPRESION:a MAS EXPRESION:b               {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :}
-            | EXPRESION:a MENOS EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :}
+            | EXPRESION:a DOBLE_ASTERISCO EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); :} %prec DOBLE_ASTERISCO
+            | EXPRESION:a PORCENTUAL EXPRESION:b        {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); :} %prec PORCENTUAL
+            | EXPRESION:a ASTERISCO EXPRESION:b         {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); :} %prec ASTERISCO
+            | EXPRESION:a BARRA EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); :} %prec BARRA
+            | EXPRESION:a MAS EXPRESION:b               {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :} %prec MAS
+            | EXPRESION:a MENOS EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :} %prec MENOS
             
             | EXPRESION:a IGUAL IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL, aleft, aright); :} %prec IGUAL_IGUAL
             | EXPRESION:a NEGACION IGUAL EXPRESION:b    {: RESULT = new Relacionales(a, b, OperadoresRelacionales.NOIGUAL, aleft, aright); :} %prec DESIGUAL
@@ -104,14 +104,16 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | EXPRESION:a MAYOR EXPRESION:b             {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright); :} %prec MAYOR_Q
             | EXPRESION:a MAYOR IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL_MAYOR, aleft, aright); :} %prec MAYOR_I_Q
 
-            | EXPRESION:a PIPE PIPE EXPRESION:b         {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); :} %prec OR
+            | NEGACION EXPRESION:a                      {: RESULT = new Logicos(a, OperadoresLogicos.NOT, aleft, aright); :} %prec NOT
             |EXPRESION:a AMPERSAND AMPERSAND EXPRESION:b{: RESULT = new Logicos(a, b, OperadoresLogicos.AND, aleft, aright); :} %prec AND
             | EXPRESION:a CIRCUNFLEJO EXPRESION:b       {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); :} %prec XOR
-            | NEGACION EXPRESION:a              {: RESULT = new Logicos(a, OperadoresLogicos.NOT, aleft, aright); :} %prec NOT
+            | EXPRESION:a PIPE PIPE EXPRESION:b         {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); :} %prec OR          
             
             | ENTERO:a                                  {: RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright); :}
             | DECIMAL:a                                 {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}
             | CADENA:a                                  {: RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright); :}
             | CARACTER:a                                {: RESULT = new Nativo(a, new Tipo(tipoDato.CARACTER), aleft, aright); :}
             | BOOLEANO:a                                {: RESULT = new Nativo(a, new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
+
+            | PAR1 EXPRESION:a PAR2                     {:   RESULT = a;    :}
 ;

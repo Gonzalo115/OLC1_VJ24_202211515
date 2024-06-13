@@ -267,6 +267,7 @@ public class Principal extends javax.swing.JFrame {
                         break;
                     }
                 }
+                
 
                 if (encontrada == false) {
                     try {
@@ -333,7 +334,11 @@ public class Principal extends javax.swing.JFrame {
             for (var a : ast.getInstrucciones()) {
                 var res = a.interpretar(ast, tabla);
             }
-            ConsolaTextArea.setText(ast.getConsola());
+            String c = ast.getConsola();
+            System.out.println(c);
+            c = c.replace('\"','"');
+            System.out.println(c);
+            ConsolaTextArea.setText(c);
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
             System.out.println(ex);

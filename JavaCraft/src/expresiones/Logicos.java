@@ -75,11 +75,7 @@ public class Logicos extends Instruccion {
         var tipo2 = this.expresion2.tipo.getTipo();
 
         if (tipo1 == tipoDato.BOOLEANO && tipo2 == tipoDato.BOOLEANO) {
-            if (op1.toString().equalsIgnoreCase("false") && op2.toString().equalsIgnoreCase("false")) {
-                return false;
-            } else {
-                return true;
-            }
+            return toBoolean(op1) || toBoolean(op2);
         } else {
             return new Errores("SEMANTICO", "Logico Invalido", this.linea, this.col);
         }
@@ -90,11 +86,7 @@ public class Logicos extends Instruccion {
         var tipo2 = this.expresion2.tipo.getTipo();
 
         if (tipo1 == tipoDato.BOOLEANO && tipo2 == tipoDato.BOOLEANO) {
-            if (op1.toString().equalsIgnoreCase("true") && op2.toString().equalsIgnoreCase("true")) {
-                return true;
-            } else {
-                return false;
-            }
+            return toBoolean(op1) && toBoolean(op2);
         } else {
             return new Errores("SEMANTICO", "Logico Invalido", this.linea, this.col);
         }
@@ -105,9 +97,9 @@ public class Logicos extends Instruccion {
         var tipo2 = this.expresion2.tipo.getTipo();
 
         if (tipo1 == tipoDato.BOOLEANO && tipo2 == tipoDato.BOOLEANO) {
-            if (op1.toString().equalsIgnoreCase("true") && op2.toString().equalsIgnoreCase("true")) {
+            if (toBoolean(op1) == true && toBoolean(op2) == true) {
                 return false;
-            } else if (op1.toString().equalsIgnoreCase("false") || !op2.toString().equalsIgnoreCase("false")) {
+            } else if (toBoolean(op1) == false && toBoolean(op2) == false) {
                 return false;
             } else {
                 return true;
@@ -121,13 +113,22 @@ public class Logicos extends Instruccion {
         var tipo = this.logicoUnico.tipo.getTipo();
 
         if (tipo == tipoDato.BOOLEANO) {
-            if (op.toString().equalsIgnoreCase("true")) {
+            if (toBoolean(op) == true) {
                 return false;
             } else {
                 return true;
             }
         } else {
             return new Errores("SEMANTICO", "Logico Invalido", this.linea, this.col);
+        }
+    }
+
+    public static boolean toBoolean(Object obj) {
+        if (obj instanceof String) {
+            return Boolean.valueOf(((String) obj).toLowerCase());
+        }
+        else {
+            return (boolean) obj;
         }
     }
 }

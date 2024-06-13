@@ -26,6 +26,11 @@ import java_cup.runtime.Symbol;
 %debug
 %ignorecase
 
+// Estados léxicos
+%state COMENT_MULTI
+%state COMENT_SIMPLE
+
+
 //simbolos del sistema
 PAR1="("
 PAR2=")"
@@ -38,8 +43,8 @@ ASTERISCO="*"
 DOBLE_ASTERISCO="**"
 PORCENTUAL="%"
 
-// COMENTARIO_LINEA= (//[^\n]*)
-// COMENTARIO="/\\*[\\s\\S]*?\\*/"
+COMENTARIO_LINEA= ([//][^\n]*)
+COMENTARIO="/\\*[\\s\\S]*?\\*/"
 BARRA="/"
 
 BLANCOS=[\ \r\t\f\n]+
@@ -55,7 +60,7 @@ CIRCUNFLEJO="^"
 
 ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
-CADENA = [\"]([^\"])*[\"]
+CADENA = [\"]((\\n)|(\\\")|(\\\\)|(\\t)|(\\\')|([^\"]))*[\"]
 BOOLEANO = ((true)|(false))
 CARACTER= ('[^\ \r\t\f\n]')
 
@@ -63,8 +68,17 @@ CARACTER= ('[^\ \r\t\f\n]')
 IMPRIMIR="println"
 
 %%
-<YYINITIAL> {IMPRIMIR} {return new Symbol(sym.IMPRIMIR, yyline, yycolumn,yytext());}
 
+<YYINITIAL> "/*"                {yybegin(COMENT_MULTI);}
+<COMENT_MULTI> "*/"             {yybegin(YYINITIAL);}
+<COMENT_MULTI> .                {}
+<COMENT_MULTI> [ \t\r\n\f]      {}
+
+<YYINITIAL> "//"                {yybegin(COMENT_SIMPLE);}
+<COMENT_SIMPLE> [^"\n"]         {}
+<COMENT_SIMPLE> "\n"            {yybegin(YYINITIAL);}
+
+<YYINITIAL> {IMPRIMIR} {return new Symbol(sym.IMPRIMIR, yyline, yycolumn,yytext());}
 <YYINITIAL> {DECIMAL} {return new Symbol(sym.DECIMAL, yyline, yycolumn,yytext());}
 <YYINITIAL> {ENTERO} {return new Symbol(sym.ENTERO, yyline, yycolumn,yytext());}
 <YYINITIAL> {BOOLEANO} {return new Symbol(sym.BOOLEANO, yyline, yycolumn,yytext());}
@@ -78,17 +92,16 @@ IMPRIMIR="println"
 <YYINITIAL> {CADENA} {
     String cadena = yytext();
     cadena = cadena.substring(1, cadena.length()-1);
+    System.out.println(cadena);
+    cadena = cadena.replace('\"','"');
+    System.out.println(cadena);
     return new Symbol(sym.CADENA, yyline, yycolumn,cadena);
+
     }
 
 <YYINITIAL> {FINCADENA} {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR1} {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> {PAR2} {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
-
-// <YYINITIAL> {COMENTARIO_LINEA} {}
-// <YYINITIAL> {COMENTARIO} {}
-
-
 
 <YYINITIAL> {MAS} {return new Symbol(sym.MAS, yyline, yycolumn,yytext());}
 <YYINITIAL> {MENOS} {return new Symbol(sym.MENOS, yyline, yycolumn,yytext());}
