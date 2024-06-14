@@ -11,6 +11,8 @@ import simbolo.tipoDato;
 import instrucciones.Print;
 import instrucciones.Declaracion;
 import instrucciones.AsignacionVC;
+import instrucciones.Incremento;
+import instrucciones.Decremento;
 
 //expresiones
 import expresiones.Nativo;
@@ -54,7 +56,7 @@ terminal IMPRIMIR, INT, DOUBLE, BOOL, CHAR, STRINGG, VAR, CONST;
 
 terminal FINCADENA, DOSPUNTOS, PAR1, PAR2;
 
-terminal MAS, MENOS, UMENOS, DOBLE_ASTERISCO, BARRA, ASTERISCO, PORCENTUAL;
+terminal MAS, MASS, MENOS, UMENOS, MENOSS, DOBLE_ASTERISCO, BARRA, ASTERISCO, PORCENTUAL;
 
 terminal IGUAL, MENOR, MAYOR, NEGACION;
 terminal IGUAL_IGUAL, DESIGUAL, MENOR_Q, MAYOR_Q, MENOR_I_Q, MAYOR_I_Q;
@@ -66,7 +68,7 @@ terminal OR, AND, XOR, NOT;
 //no terminales
 nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
 nonterminal Instruccion INSTRUCCION;
-nonterminal Instruccion IMPRESION, DECLARACION, ASIGNACION;
+nonterminal Instruccion IMPRESION, DECLARACION, ASIGNACION, INCREMENTO, DECREMENTO;
 nonterminal Tipo TIPOS;
 nonterminal Instruccion EXPRESION;
 
@@ -75,7 +77,7 @@ precedence left AND;
 precedence left XOR;
 precedence right NOT;
 precedence left IGUAL_IGUAL, DESIGUAL, MENOR_Q, MENOR_I_Q, MAYOR_Q, MAYOR_I_Q;
-precedence left MAS, MENOS;
+precedence left MASS, MENOSS;
 precedence left ASTERISCO, BARRA, PORCENTUAL;
 precedence nonassoc DOBLE_ASTERISCO;
 precedence right UMENOS;
@@ -94,10 +96,15 @@ INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b)
 INSTRUCCION ::= IMPRESION:a         {:   RESULT=a;   :}
                 | ASIGNACION:a      {:   RESULT=a;   :}
                 | DECLARACION:a     {:   RESULT=a;   :}
+                | INCREMENTO:a      {:   RESULT=a;   :}
+                | DECREMENTO:a      {:   RESULT=a;   :}
 ;
 
 
 IMPRESION ::= IMPRIMIR PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
+;
+
+ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {:   RESULT=new AsignacionVC(a, b, aleft, aright);  :}
 ;
 
 DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                {:   RESULT = new Declaracion(true, a, b, aleft, aright);       :}
@@ -106,7 +113,10 @@ DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                {:   RESULT 
                 |CONST ID:a DOSPUNTOS TIPOS:b EXPRESION:c FINCADENA {:   RESULT = new Declaracion(false, a, b, c , aleft, aright);  :}
 ;
 
-ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {:   RESULT=new AsignacionVC(a, b, aleft, aright);  :}
+INCREMENTO ::= ID:a MAS MAS FINCADENA                               {:   RESULT = new Incremento(a, aleft, aright);  :}
+;
+
+DECREMENTO ::= ID:a MENOS MENOS FINCADENA                           {:   RESULT = new Decremento(a, aleft, aright);  :}
 ;
 
 TIPOS ::=    INT        {:   RESULT=new Tipo(tipoDato.ENTERO);   :}                                       
@@ -121,8 +131,8 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | EXPRESION:a PORCENTUAL EXPRESION:b        {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); :} %prec PORCENTUAL
             | EXPRESION:a ASTERISCO EXPRESION:b         {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); :} %prec ASTERISCO
             | EXPRESION:a BARRA EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); :} %prec BARRA
-            | EXPRESION:a MAS EXPRESION:b               {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :} %prec MAS
-            | EXPRESION:a MENOS EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :} %prec MENOS
+            | EXPRESION:a MAS EXPRESION:b               {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :} %prec MASS
+            | EXPRESION:a MENOS EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :} %prec MENOSS
             
             | EXPRESION:a IGUAL IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL, aleft, aright); :} %prec IGUAL_IGUAL
             | EXPRESION:a NEGACION IGUAL EXPRESION:b    {: RESULT = new Relacionales(a, b, OperadoresRelacionales.NOIGUAL, aleft, aright); :} %prec DESIGUAL

@@ -6,46 +6,52 @@ package instrucciones;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
-import simbolo.*;
+import simbolo.Arbol;
+import simbolo.Tipo;
+import simbolo.tablaSimbolos;
+import simbolo.tipoDato;
 
 /**
  *
  * @author 5gonz
  */
-public class AsignacionVC extends Instruccion {
+public class Decremento extends Instruccion {
 
     private String id;
-    private Instruccion exp;
 
-    public AsignacionVC(String id, Instruccion exp, int linea, int col) {
+    public Decremento(String id, int linea, int col) {
         super(new Tipo(tipoDato.VOID), linea, col);
         this.id = id;
-        this.exp = exp;
     }
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         //variable exista
         var variable = tabla.getVariable(id);
+
         if (variable == null) {
             return new Errores("SEMANTICO", "Variable no exitente",
                     this.linea, this.col);
         }
 
         if (!variable.mutable) {
-            return new Errores("SEMANTICO", "Esta Tratando de Asignar un Valor a una variable CONST", this.linea, this.col);
-        }
-
-        // interpretar el nuevo valor a asignar
-        var newValor = this.exp.interpretar(arbol, tabla);
-        if (newValor instanceof Errores) {
-            return newValor;
+            return new Errores("SEMANTICO", "Esta Tratando de Asignar un Nuevo Valor a una variable CONST", this.linea, this.col);
         }
 
         //validar tipos
-        if (variable.getTipo().getTipo() != this.exp.tipo.getTipo()) {
-            return new Errores("SEMANTICO", "Tipos erroneos en asignacion",
+        if (variable.getTipo().getTipo() != tipoDato.ENTERO && variable.getTipo().getTipo() != tipoDato.DECIMAL) {
+            return new Errores("SEMANTICO", "El tipo " + variable.getTipo().getTipo() + " no se puede incrementar.",
                     this.linea, this.col);
+        }
+
+        var newValor = variable.getValor();
+
+        if (variable.getTipo().getTipo() == tipoDato.ENTERO) {
+            newValor = (int) newValor - 1;
+        }
+
+        if (variable.getTipo().getTipo() == tipoDato.DECIMAL) {
+            newValor = (double) newValor - 1;
         }
 
         //this.tipo.setTipo(variable.getTipo().getTipo());
