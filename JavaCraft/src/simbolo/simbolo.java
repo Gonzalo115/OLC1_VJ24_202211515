@@ -12,6 +12,7 @@ public class simbolo {
     private Tipo tipo;
     private String id;
     private Object valor;
+    public boolean mutable;
 
     public simbolo(Tipo tipo, String id) {
         this.tipo = tipo;
@@ -24,6 +25,13 @@ public class simbolo {
         this.valor = valor;
     }
 
+    public simbolo(Tipo tipo, String id, boolean mutable, Object valor) {
+        this.tipo = tipo;
+        this.id = id;
+        this.mutable = mutable;
+        this.valor = valor;
+    }
+    
     public Tipo getTipo() {
         return tipo;
     }
@@ -46,6 +54,14 @@ public class simbolo {
 
     public void setValor(Object valor) {
         this.valor = valor;
+    }
+
+    public boolean getMutable() {
+        return mutable;
+    }
+
+    public void setMutable(boolean mutable) {
+        this.mutable = mutable;
     }
     
    

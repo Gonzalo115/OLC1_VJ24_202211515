@@ -8,41 +8,50 @@ package analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int AND = 32;
-  public static final int PIPE = 28;
-  public static final int MAYOR_I_Q = 27;
-  public static final int MENOS = 12;
-  public static final int MENOR = 19;
-  public static final int CADENA = 2;
-  public static final int OR = 31;
-  public static final int IGUAL = 18;
-  public static final int FINCADENA = 8;
-  public static final int DECIMAL = 5;
-  public static final int DESIGUAL = 23;
-  public static final int NOT = 34;
-  public static final int MENOR_I_Q = 26;
-  public static final int NEGACION = 21;
-  public static final int PORCENTUAL = 17;
-  public static final int BARRA = 15;
-  public static final int IMPRIMIR = 7;
-  public static final int UMENOS = 13;
-  public static final int BOOLEANO = 6;
-  public static final int CARACTER = 3;
-  public static final int IGUAL_IGUAL = 22;
-  public static final int MAYOR = 20;
-  public static final int EOF = 0;
-  public static final int ASTERISCO = 16;
-  public static final int DOBLE_ASTERISCO = 14;
-  public static final int CIRCUNFLEJO = 30;
-  public static final int MENOR_Q = 24;
-  public static final int error = 1;
-  public static final int PAR2 = 10;
-  public static final int PAR1 = 9;
-  public static final int XOR = 33;
+  public static final int PAR2 = 19;
+  public static final int DOSPUNTOS = 17;
+  public static final int PAR1 = 18;
+  public static final int CONST = 15;
+  public static final int CHAR = 12;
+  public static final int CIRCUNFLEJO = 39;
+  public static final int MAYOR_I_Q = 36;
+  public static final int IMPRIMIR = 8;
+  public static final int STRINGG = 13;
   public static final int ENTERO = 4;
-  public static final int AMPERSAND = 29;
-  public static final int MAS = 11;
-  public static final int MAYOR_Q = 25;
+  public static final int XOR = 42;
+  public static final int DOUBLE = 10;
+  public static final int INT = 9;
+  public static final int ASTERISCO = 25;
+  public static final int NOT = 43;
+  public static final int AND = 41;
+  public static final int FINCADENA = 16;
+  public static final int IGUAL = 27;
+  public static final int CARACTER = 3;
+  public static final int OR = 40;
+  public static final int BOOL = 11;
+  public static final int MENOR_I_Q = 35;
+  public static final int UMENOS = 22;
+  public static final int AMPERSAND = 38;
+  public static final int MAYOR_Q = 34;
+  public static final int IGUAL_IGUAL = 31;
+  public static final int ID = 7;
+  public static final int EOF = 0;
+  public static final int DECIMAL = 5;
+  public static final int DOBLE_ASTERISCO = 23;
+  public static final int MENOR_Q = 33;
+  public static final int error = 1;
+  public static final int PIPE = 37;
+  public static final int CADENA = 2;
+  public static final int NEGACION = 30;
+  public static final int MENOS = 21;
+  public static final int MENOR = 28;
+  public static final int DESIGUAL = 32;
+  public static final int MAYOR = 29;
+  public static final int BARRA = 24;
+  public static final int PORCENTUAL = 26;
+  public static final int BOOLEANO = 6;
+  public static final int VAR = 14;
+  public static final int MAS = 20;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -51,8 +60,17 @@ public class sym {
   "ENTERO",
   "DECIMAL",
   "BOOLEANO",
+  "ID",
   "IMPRIMIR",
+  "INT",
+  "DOUBLE",
+  "BOOL",
+  "CHAR",
+  "STRINGG",
+  "VAR",
+  "CONST",
   "FINCADENA",
+  "DOSPUNTOS",
   "PAR1",
   "PAR2",
   "MAS",

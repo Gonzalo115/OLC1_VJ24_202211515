@@ -9,6 +9,8 @@ import simbolo.tipoDato;
 
 //instrucciones
 import instrucciones.Print;
+import instrucciones.Declaracion;
+import instrucciones.AsignacionVC;
 
 //expresiones
 import expresiones.Nativo;
@@ -18,6 +20,7 @@ import expresiones.Relacionales;
 import expresiones.OperadoresRelacionales;
 import expresiones.Logicos;
 import expresiones.OperadoresLogicos;
+import expresiones.AccesoVC;
 
 
 // parser
@@ -45,11 +48,11 @@ action code
 :}
 
 //terminales
-terminal String CADENA, CARACTER, ENTERO, DECIMAL, BOOLEANO;
+terminal String CADENA, CARACTER, ENTERO, DECIMAL, BOOLEANO, ID;
 
-terminal IMPRIMIR;
+terminal IMPRIMIR, INT, DOUBLE, BOOL, CHAR, STRINGG, VAR, CONST;
 
-terminal FINCADENA, PAR1, PAR2;
+terminal FINCADENA, DOSPUNTOS, PAR1, PAR2;
 
 terminal MAS, MENOS, UMENOS, DOBLE_ASTERISCO, BARRA, ASTERISCO, PORCENTUAL;
 
@@ -63,6 +66,8 @@ terminal OR, AND, XOR, NOT;
 //no terminales
 nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
 nonterminal Instruccion INSTRUCCION;
+nonterminal Instruccion IMPRESION, DECLARACION, ASIGNACION;
+nonterminal Tipo TIPOS;
 nonterminal Instruccion EXPRESION;
 
 precedence left OR;
@@ -86,7 +91,29 @@ INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b)
                 | INSTRUCCION:a                     {: RESULT = new LinkedList<>(); RESULT.add(a); :}
 ;
 
-INSTRUCCION ::= IMPRIMIR PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
+INSTRUCCION ::= IMPRESION:a         {:   RESULT=a;   :}
+                | ASIGNACION:a      {:   RESULT=a;   :}
+                | DECLARACION:a     {:   RESULT=a;   :}
+;
+
+
+IMPRESION ::= IMPRIMIR PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
+;
+
+DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                {:   RESULT = new Declaracion(true, a, b, aleft, aright);       :}
+                |VAR ID:a DOSPUNTOS TIPOS:b EXPRESION:c FINCADENA   {:   RESULT = new Declaracion(true, a, b, c , aleft, aright);   :}
+                |CONST ID:a DOSPUNTOS TIPOS:b FINCADENA             {:   RESULT = new Declaracion(false, a, b, aleft, aright);      :}
+                |CONST ID:a DOSPUNTOS TIPOS:b EXPRESION:c FINCADENA {:   RESULT = new Declaracion(false, a, b, c , aleft, aright);  :}
+;
+
+ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {:   RESULT=new AsignacionVC(a, b, aleft, aright);  :}
+;
+
+TIPOS ::=    INT        {:   RESULT=new Tipo(tipoDato.ENTERO);   :}                                       
+            |DOUBLE     {:   RESULT=new Tipo(tipoDato.DECIMAL);   :}  
+            |BOOL       {:   RESULT=new Tipo(tipoDato.BOOLEANO);   :}  
+            |CHAR       {:   RESULT=new Tipo(tipoDato.CARACTER);   :}  
+            |STRINGG    {:   RESULT=new Tipo(tipoDato.CADENA);   :}  
 ;
 
 EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright); :} %prec UMENOS
@@ -114,6 +141,6 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | CADENA:a                                  {: RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright); :}
             | CARACTER:a                                {: RESULT = new Nativo(a, new Tipo(tipoDato.CARACTER), aleft, aright); :}
             | BOOLEANO:a                                {: RESULT = new Nativo(a, new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
-
+            | ID:a                                      {:   RESULT = new AccesoVC(a, aleft, aright);   :}
             | PAR1 EXPRESION:a PAR2                     {:   RESULT = a;    :}
 ;
