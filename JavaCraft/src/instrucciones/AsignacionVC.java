@@ -37,7 +37,11 @@ public class AsignacionVC extends Instruccion {
         if (newValor instanceof Errores) {
             return newValor;
         }
-
+        
+        if (!variable.mutable){
+            return new Errores("SEMANTICO", "Esta Tratando de Asignar un Valor a una variable CONST",this.linea, this.col);
+        }
+        
         //validar tipos
         if (variable.getTipo().getTipo() != this.exp.tipo.getTipo()) {
             return new Errores("SEMANTICO", "Tipos erroneos en asignacion",

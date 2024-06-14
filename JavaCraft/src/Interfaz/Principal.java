@@ -335,9 +335,7 @@ public class Principal extends javax.swing.JFrame {
                 var res = a.interpretar(ast, tabla);
             }
             String c = ast.getConsola();
-            System.out.println(c);
             c = c.replace('\"','"');
-            System.out.println(c);
             ConsolaTextArea.setText(c);
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
