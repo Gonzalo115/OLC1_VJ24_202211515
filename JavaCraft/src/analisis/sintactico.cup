@@ -23,6 +23,7 @@ import expresiones.OperadoresRelacionales;
 import expresiones.Logicos;
 import expresiones.OperadoresLogicos;
 import expresiones.AccesoVC;
+import expresiones.Casteos;
 
 
 // parser
@@ -106,6 +107,7 @@ IMPRESION ::= IMPRIMIR PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Pr
 ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {:   RESULT=new AsignacionVC(a, b, aleft, aright);  :}
 ;
 
+
 DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                {:   RESULT = new Declaracion(true, a, b, aleft, aright);       :}
                 |VAR ID:a DOSPUNTOS TIPOS:b IGUAL EXPRESION:c FINCADENA   {:   RESULT = new Declaracion(true, a, b, c , aleft, aright);   :}
                 |CONST ID:a DOSPUNTOS TIPOS:b FINCADENA             {:   RESULT = new Declaracion(false, a, b, aleft, aright);      :}
@@ -145,6 +147,8 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | EXPRESION:a XOR EXPRESION:b               {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); :} %prec XOR
             | EXPRESION:a OR EXPRESION:b                {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); :} %prec OR       
             
+            |PAR1 TIPOS:a PAR2 EXPRESION:b              {: RESULT = new Casteos(a, b, aleft, aright); :}
+
             | ENTERO:a                                  {: RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright); :}
             | DECIMAL:a                                 {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}
             | CADENA:a                                  {: RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright); :}
