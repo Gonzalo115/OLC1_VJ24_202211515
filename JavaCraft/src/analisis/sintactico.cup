@@ -107,9 +107,9 @@ ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {:   RESULT=new AsignacionVC(a,
 ;
 
 DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                {:   RESULT = new Declaracion(true, a, b, aleft, aright);       :}
-                |VAR ID:a DOSPUNTOS TIPOS:b EXPRESION:c FINCADENA   {:   RESULT = new Declaracion(true, a, b, c , aleft, aright);   :}
+                |VAR ID:a DOSPUNTOS TIPOS:b IGUAL EXPRESION:c FINCADENA   {:   RESULT = new Declaracion(true, a, b, c , aleft, aright);   :}
                 |CONST ID:a DOSPUNTOS TIPOS:b FINCADENA             {:   RESULT = new Declaracion(false, a, b, aleft, aright);      :}
-                |CONST ID:a DOSPUNTOS TIPOS:b EXPRESION:c FINCADENA {:   RESULT = new Declaracion(false, a, b, c , aleft, aright);  :}
+                |CONST ID:a DOSPUNTOS TIPOS:b IGUAL EXPRESION:c FINCADENA {:   RESULT = new Declaracion(false, a, b, c , aleft, aright);  :}
 ;
 
 INCREMENTO ::= ID:a MAS_MAS FINCADENA                               {:   RESULT = new Incremento(a, aleft, aright);  :}
@@ -126,24 +126,24 @@ TIPOS ::=    INT        {:   RESULT=new Tipo(tipoDato.ENTERO);   :}
 ;
 
 EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright); :} %prec UMENOS
-            | EXPRESION:a DOBLE_ASTERISCO EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); :}
-            | EXPRESION:a PORCENTUAL EXPRESION:b        {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); :}
-            | EXPRESION:a ASTERISCO EXPRESION:b         {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); :}
-            | EXPRESION:a DIVISION EXPRESION:b          {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); :}
-            | EXPRESION:a MAS EXPRESION:b               {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :}
-            | EXPRESION:a MENOS EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :}
+            | EXPRESION:a DOBLE_ASTERISCO EXPRESION:b   {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.POTENCIA, aleft, aright); :} %prec DOBLE_ASTERISCO
+            | EXPRESION:a PORCENTUAL EXPRESION:b        {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MODULO, aleft, aright); :} %prec PORCENTUAL
+            | EXPRESION:a ASTERISCO EXPRESION:b         {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.MULTIPLICACION, aleft, aright); :} %prec ASTERISCO
+            | EXPRESION:a DIVISION EXPRESION:b          {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.DIVISION, aleft, aright); :} %prec DIVISION
+            | EXPRESION:a MAS EXPRESION:b               {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.SUMA, aleft, aright); :} %prec MAS
+            | EXPRESION:a MENOS EXPRESION:b             {: RESULT = new Aritmeticas(a, b, OperadoresAritmeticos.RESTA, aleft, aright); :} %prec MENOS
             
-            | EXPRESION:a IGUAL_IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL, aleft, aright); :}
-            | EXPRESION:a NOT_IGUAL EXPRESION:b         {: RESULT = new Relacionales(a, b, OperadoresRelacionales.NOIGUAL, aleft, aright); :}
-            | EXPRESION:a MENOR EXPRESION:b             {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENOR, aleft, aright); :}
-            | EXPRESION:a MENOR_IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL_MENOR, aleft, aright); :}
-            | EXPRESION:a MAYOR EXPRESION:b             {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright); :}
-            | EXPRESION:a MAYOR_IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL_MAYOR, aleft, aright); :}
+            | EXPRESION:a IGUAL_IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL, aleft, aright); :} %prec IGUAL_IGUAL
+            | EXPRESION:a NOT_IGUAL EXPRESION:b         {: RESULT = new Relacionales(a, b, OperadoresRelacionales.NOIGUAL, aleft, aright); :} %prec NOT_IGUAL
+            | EXPRESION:a MENOR EXPRESION:b             {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MENOR, aleft, aright); :} %prec MENOR
+            | EXPRESION:a MENOR_IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL_MENOR, aleft, aright); :} %prec MENOR_IGUAL
+            | EXPRESION:a MAYOR EXPRESION:b             {: RESULT = new Relacionales(a, b, OperadoresRelacionales.MAYOR, aleft, aright); :} %prec MAYOR
+            | EXPRESION:a MAYOR_IGUAL EXPRESION:b       {: RESULT = new Relacionales(a, b, OperadoresRelacionales.IGUAL_MAYOR, aleft, aright); :} %prec MAYOR_IGUAL
 
-            | NOT EXPRESION:a                           {: RESULT = new Logicos(a, OperadoresLogicos.NOT, aleft, aright); :}
-            | EXPRESION:a AND EXPRESION:b               {: RESULT = new Logicos(a, b, OperadoresLogicos.AND, aleft, aright); :}
-            | EXPRESION:a XOR EXPRESION:b               {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); :}
-            | EXPRESION:a OR EXPRESION:b                {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); :}         
+            | NOT EXPRESION:a                           {: RESULT = new Logicos(a, OperadoresLogicos.NOT, aleft, aright); :} %prec NOT
+            | EXPRESION:a AND EXPRESION:b               {: RESULT = new Logicos(a, b, OperadoresLogicos.AND, aleft, aright); :} %prec AND
+            | EXPRESION:a XOR EXPRESION:b               {: RESULT = new Logicos(a, b, OperadoresLogicos.XOR, aleft, aright); :} %prec XOR
+            | EXPRESION:a OR EXPRESION:b                {: RESULT = new Logicos(a, b, OperadoresLogicos.OR, aleft, aright); :} %prec OR       
             
             | ENTERO:a                                  {: RESULT = new Nativo(Integer.parseInt(a), new Tipo(tipoDato.ENTERO), aleft, aright); :}
             | DECIMAL:a                                 {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}

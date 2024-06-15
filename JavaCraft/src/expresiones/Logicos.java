@@ -23,7 +23,7 @@ public class Logicos extends Instruccion {
     private Instruccion logicoUnico;
 
     public Logicos(Instruccion logicoUnico, OperadoresLogicos logico, int linea, int col) {
-        super(new Tipo(tipoDato.ENTERO), linea, col);
+        super(new Tipo(tipoDato.BOOLEANO), linea, col);
         this.logicoUnico = logicoUnico;
         this.logico = logico;
     }

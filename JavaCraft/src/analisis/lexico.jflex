@@ -65,12 +65,14 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "var" {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
 <YYINITIAL> "const" {return new Symbol(sym.CONST, yyline, yycolumn,yytext());}
 
-<YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
+
 
 //Estructura de las variables
 <YYINITIAL> {DECIMAL} {return new Symbol(sym.DECIMAL, yyline, yycolumn,yytext());}
 <YYINITIAL> {ENTERO} {return new Symbol(sym.ENTERO, yyline, yycolumn,yytext());}
 <YYINITIAL> {BOOLEANO} {return new Symbol(sym.BOOLEANO, yyline, yycolumn,yytext());}
+
+<YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
 <YYINITIAL> {CARACTER} {
     String caracter = yytext();
     caracter = caracter.substring(1, caracter.length()-1);
