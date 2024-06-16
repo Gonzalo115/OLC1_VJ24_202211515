@@ -49,8 +49,9 @@ public class Declaracion extends Instruccion {
             }
             //validamos los tipo
             if (this.valor.tipo.getTipo() != this.tipo.getTipo()) {
-                return new Errores("SEMANTICO", "Tipos erroneos", this.linea, this.col);
-            }
+            return new Errores("SEMANTICO", "El tipo de variable "+this.tipo.getTipo()+" y el tipo de dato "+this.valor.tipo.getTipo()+" No coicide. ",
+            this.linea, this.col);
+                    }
 
             s = new simbolo(this.tipo, this.identificador, this.mutable, valorInterpretado);
         } else {

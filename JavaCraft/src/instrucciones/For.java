@@ -34,13 +34,13 @@ public class For extends Instruccion {
         var newTabla = new tablaSimbolos(tabla);
 
         // asignacion/declaracion
-        var res1 = this.asignacion.interpretar(arbol, newTabla);
+        var res1 = this.asignacion.interpretar(arbol, tabla);
         if (res1 instanceof Errores) {
             return res1;
         }
 
         //validar la condicion -> Booleano
-        var cond = this.condicion.interpretar(arbol, newTabla);
+        var cond = this.condicion.interpretar(arbol, tabla);
         if (cond instanceof Errores) {
             return cond;
         }
@@ -50,7 +50,7 @@ public class For extends Instruccion {
                     this.linea, this.col);
         }
 
-        while ((boolean) this.condicion.interpretar(arbol, newTabla)) {
+        while ((boolean) this.condicion.interpretar(arbol, tabla)) {
             //nuevo entorno
             var newTabla2 = new tablaSimbolos(newTabla);
 
@@ -59,14 +59,20 @@ public class For extends Instruccion {
                 if (i instanceof Break) {
                     return null;
                 }
-                var resIns = i.interpretar(arbol, newTabla2);
+                if (i instanceof Continue) {
+                    return null;
+                }
+                var resIns = i.interpretar(arbol, tabla);
                 if (resIns instanceof Break) {
+                    return null;
+                }
+                if (resIns instanceof Continue) {
                     return null;
                 }
             }
 
             //actualizar la variable
-            var act = this.actualizacion.interpretar(arbol, newTabla);
+            var act = this.actualizacion.interpretar(arbol, tabla);
             if (act instanceof Errores) {
                 return act;
             }

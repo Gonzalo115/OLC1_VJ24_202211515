@@ -74,6 +74,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "do"        {return new Symbol(sym.DO, yyline, yycolumn,yytext());}
 <YYINITIAL> "break"     {return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
 <YYINITIAL> "match"     {return new Symbol(sym.MATCH, yyline, yycolumn,yytext());} 
+<YYINITIAL> "continue"     {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
 
 
 
@@ -90,7 +91,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> ")"     {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
 <YYINITIAL> "++"    {return new Symbol(sym.MAS_MAS, yyline, yycolumn,yytext());}
 <YYINITIAL> "+"     {return new Symbol(sym.MAS, yyline, yycolumn,yytext());}
-<YYINITIAL> "--"    {return new Symbol(sym.MENOS_MENOS, yyline, yycolumn,yytext());}
+<YYINITIAL> "--"    {return new Symbol(sym.MENOS_MENOS, yyline, yycolumn,yytext());} 
 <YYINITIAL> "-"     {return new Symbol(sym.MENOS, yyline, yycolumn,yytext());}
 <YYINITIAL> "/"     {return new Symbol(sym.DIVISION, yyline, yycolumn,yytext());}
 <YYINITIAL> "%"     {return new Symbol(sym.PORCENTUAL, yyline, yycolumn,yytext());}

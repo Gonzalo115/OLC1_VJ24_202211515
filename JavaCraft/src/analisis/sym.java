@@ -8,56 +8,61 @@ package analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int MAS_MAS = 38;
-  public static final int PAR2 = 26;
-  public static final int DOSPUNTOS = 24;
-  public static final int PAR1 = 25;
-  public static final int CONST = 16;
-  public static final int GUIONBAJO = 30;
-  public static final int CHAR = 13;
-  public static final int LLAVE2 = 29;
-  public static final int LLAVE1 = 28;
-  public static final int IMPRIMIR = 9;
-  public static final int STRINGG = 14;
+  public static final int MAS_MAS = 39;
+  public static final int PAR2 = 27;
+  public static final int DOSPUNTOS = 25;
+  public static final int PAR1 = 26;
+  public static final int primero = 52;
+  public static final int CONST = 17;
+  public static final int GUIONBAJO = 31;
+  public static final int CHAR = 14;
+  public static final int LLAVE2 = 30;
+  public static final int LLAVE1 = 29;
+  public static final int IMPRIMIR = 10;
+  public static final int STRINGG = 15;
   public static final int ENTERO = 4;
-  public static final int XOR = 49;
-  public static final int MENOS_MENOS = 39;
-  public static final int DOUBLE = 11;
-  public static final int INT = 10;
-  public static final int ASTERISCO = 37;
-  public static final int FOR = 19;
-  public static final int MATCH = 22;
-  public static final int AND = 48;
-  public static final int NOT = 46;
-  public static final int FINCADENA = 23;
-  public static final int IGUAL = 27;
+  public static final int CAS = 41;
+  public static final int XOR = 51;
+  public static final int MENOS_MENOS = 40;
+  public static final int DOUBLE = 12;
+  public static final int CONTINUE = 9;
+  public static final int INT = 11;
+  public static final int ASTERISCO = 38;
+  public static final int FOR = 20;
+  public static final int MATCH = 23;
+  public static final int AND = 50;
+  public static final int NOT = 48;
+  public static final int FINCADENA = 24;
+  public static final int IGUAL = 28;
   public static final int CARACTER = 3;
-  public static final int OR = 47;
-  public static final int BOOL = 12;
-  public static final int IF = 17;
-  public static final int UMENOS = 33;
-  public static final int IGUAL_IGUAL = 40;
+  public static final int OR = 49;
+  public static final int BOOL = 13;
+  public static final int IF = 18;
+  public static final int UMENOS = 34;
+  public static final int IGUAL_IGUAL = 42;
   public static final int ID = 7;
   public static final int EOF = 0;
   public static final int DECIMAL = 5;
-  public static final int DOBLE_ASTERISCO = 36;
+  public static final int DOBLE_ASTERISCO = 37;
   public static final int error = 1;
   public static final int CADENA = 2;
-  public static final int MENOS = 32;
-  public static final int MENOR = 42;
+  public static final int MENOS = 33;
+  public static final int MENOR = 44;
   public static final int BREAK = 8;
-  public static final int MAYOR = 44;
-  public static final int ELSE = 18;
-  public static final int PORCENTUAL = 35;
-  public static final int WHILE = 20;
-  public static final int MAYOR_IGUAL = 45;
+  public static final int MAYOR = 46;
+  public static final int segundo = 53;
+  public static final int ELSE = 19;
+  public static final int PORCENTUAL = 36;
+  public static final int WHILE = 21;
+  public static final int MAYOR_IGUAL = 47;
+  public static final int tercero = 54;
   public static final int BOOLEANO = 6;
-  public static final int MENOR_IGUAL = 43;
-  public static final int DIVISION = 34;
-  public static final int NOT_IGUAL = 41;
-  public static final int VAR = 15;
-  public static final int DO = 21;
-  public static final int MAS = 31;
+  public static final int MENOR_IGUAL = 45;
+  public static final int DIVISION = 35;
+  public static final int NOT_IGUAL = 43;
+  public static final int VAR = 16;
+  public static final int DO = 22;
+  public static final int MAS = 32;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -68,6 +73,7 @@ public class sym {
   "BOOLEANO",
   "ID",
   "BREAK",
+  "CONTINUE",
   "IMPRIMIR",
   "INT",
   "DOUBLE",
@@ -99,6 +105,7 @@ public class sym {
   "ASTERISCO",
   "MAS_MAS",
   "MENOS_MENOS",
+  "CAS",
   "IGUAL_IGUAL",
   "NOT_IGUAL",
   "MENOR",
@@ -108,7 +115,10 @@ public class sym {
   "NOT",
   "OR",
   "AND",
-  "XOR"
+  "XOR",
+  "primero",
+  "segundo",
+  "tercero"
   };
 }
 

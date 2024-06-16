@@ -17,6 +17,10 @@ public class If extends Instruccion {
 
     private Instruccion condicion;
     private LinkedList<Instruccion> instrucciones;
+    private LinkedList<If> If_anidados;
+    private LinkedList<Instruccion> instruccionesF;//Si la condicion es falsa
+
+    public boolean si_cumplio = false;
 
     public If(Instruccion condicion, LinkedList<Instruccion> instrucciones, int linea, int col) {
         super(new Tipo(tipoDato.VOID), linea, col);
@@ -24,9 +28,24 @@ public class If extends Instruccion {
         this.instrucciones = instrucciones;
     }
 
+    public If(LinkedList<Instruccion> instrucciones, LinkedList<If> If_anidados, Instruccion condicion, int linea, int col) {
+        super(new Tipo(tipoDato.VOID), linea, col);
+        this.instrucciones = instrucciones;
+        this.If_anidados = If_anidados;
+        this.condicion = condicion;
+    }
+
+    public If(Instruccion condicion, LinkedList<Instruccion> instrucciones, LinkedList<Instruccion> instruccionesF, int linea, int col) {
+        super(new Tipo(tipoDato.VOID), linea, col);
+        this.condicion = condicion;
+        this.instrucciones = instrucciones;
+        this.instruccionesF = instruccionesF;
+    }
+
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         var cond = this.condicion.interpretar(arbol, tabla);
+
         if (cond instanceof Errores) {
             return cond;
         }
@@ -37,22 +56,109 @@ public class If extends Instruccion {
                     this.linea, this.col);
         }
 
-        var newTabla = new tablaSimbolos(tabla);
-        if (toBoolean(cond)) {
-            for (var i : this.instrucciones) {
-                if (i instanceof Break) {
-                    return i;
-                }
-                var resultado = i.interpretar(arbol, newTabla);
+        if (this.instruccionesF == null && this.If_anidados == null) {
+            var newTabla = new tablaSimbolos(tabla);
+            if (toBoolean(cond)) {
+                si_cumplio = true;
+                for (var i : this.instrucciones) {
+                    if (i instanceof Break) {
+                        return i;
+                    }
+                    var resultado = i.interpretar(arbol, newTabla);
 
-                if (resultado instanceof Errores) {
-                    arbol.errores.add((Errores) resultado);
-                }
+                    if (resultado instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
 
-                if (resultado instanceof Break) {
-                    return resultado;
+                    if (resultado instanceof Break) {
+                        return resultado;
+                    }
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+                }
+                return null;
+
+            }
+        } else if (this.instruccionesF == null) {
+            var newTabla = new tablaSimbolos(tabla);
+            if (toBoolean(cond)) {
+                si_cumplio = true;
+                for (var i : this.instrucciones) {
+                    if (i instanceof Break) {
+                        return i;
+                    }
+                    var resultado = i.interpretar(arbol, newTabla);
+
+                    if (resultado instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
+
+                    if (resultado instanceof Break) {
+                        return resultado;
+                    }
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+                }
+                return null;
+            } else {
+                for (var i : this.If_anidados) {
+                    var resultado = i.interpretar(arbol, newTabla);
+
+                    if (resultado instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
+
+                    if (i.si_cumplio) {
+                        return null;
+                    }
                 }
             }
+        } else {
+            var newTabla = new tablaSimbolos(tabla);
+            if (toBoolean(cond)) {
+                si_cumplio = true;
+                for (var i : this.instrucciones) {
+                    if (i instanceof Break) {
+                        return i;
+                    }
+                    var resultado = i.interpretar(arbol, newTabla);
+
+                    if (resultado instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
+
+                    if (resultado instanceof Break) {
+                        return resultado;
+                    }
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+                }
+                return null;
+            } else {
+                si_cumplio = true;
+                for (var i : this.instruccionesF) {
+                    if (i instanceof Break) {
+                        return i;
+                    }
+                    var resultado = i.interpretar(arbol, newTabla);
+
+                    if (resultado instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
+
+                    if (resultado instanceof Break) {
+                        return resultado;
+                    }
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+                }
+
+            }
+
         }
         return null;
     }

@@ -44,7 +44,7 @@ public class AsignacionVC extends Instruccion {
 
         //validar tipos
         if (variable.getTipo().getTipo() != this.exp.tipo.getTipo()) {
-            return new Errores("SEMANTICO", "Tipos erroneos en asignacion",
+            return new Errores("SEMANTICO", "El tipo de variable "+variable.getTipo().getTipo()+" y el tipo de dato "+this.exp.tipo.getTipo()+" No coicide. ",
                     this.linea, this.col);
         }
 
