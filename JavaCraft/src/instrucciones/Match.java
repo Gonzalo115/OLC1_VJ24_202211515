@@ -32,15 +32,12 @@ public class Match extends Instruccion {
         this.c = c;
     }
 
-    public Match(LinkedList<Instruccion> defaul, Instruccion condicionE,  int linea, int col) {
+    public Match(LinkedList<Instruccion> defaul, Instruccion condicionE, int linea, int col) {
         super(new Tipo(tipoDato.VOID), linea, col);
         this.condicionE = condicionE;
         this.defaul = defaul;
     }
 
-
-    
-    
     
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
@@ -49,28 +46,45 @@ public class Match extends Instruccion {
             return cond;
         }
 
-        // ver que cond sea booleano
         if (this.condicionE.tipo.getTipo() == tipoDato.VOID) {
             return new Errores("SEMANTICO", "Expresion invalida Debe debe de tener un Tipo osea debe ser un resultado.",
                     this.linea, this.col);
         }
 
-        var newTabla = new tablaSimbolos(tabla);
+        if (this.defaul == null) {
+            var newTabla = new tablaSimbolos(tabla);
 
-        for (var i : this.c) {
-            var resultado = i.caso.interpretar(arbol, newTabla);
+            for (var i : this.c) {
+                var resultado = i.caso.interpretar(arbol, newTabla);
 
-            if (resultado instanceof Errores) {
-                arbol.errores.add((Errores) resultado);
-            }
-
-            var prueba = this.condicionE;
-            if (cond == resultado) {
-                var sol = i.interpretar(arbol, newTabla);
-                if (sol instanceof Errores) {
+                if (resultado instanceof Errores) {
                     arbol.errores.add((Errores) resultado);
                 }
-                break;
+
+                var prueba = this.condicionE;
+                if (cond == resultado) {
+                    var sol = i.interpretar(arbol, newTabla);
+                    if (sol instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
+                    break;
+                }
+            }
+        } else if (this.c == null) {
+            var newTabla = new tablaSimbolos(tabla);
+            for (var i : this.defaul) {
+                if (i instanceof Break) {
+                    return i;
+                }
+                var resultado = i.interpretar(arbol, newTabla);
+
+                if (resultado instanceof Errores) {
+                    arbol.errores.add((Errores) resultado);
+                }
+
+                if (resultado instanceof Break) {
+                    return resultado;
+                }
             }
         }
 

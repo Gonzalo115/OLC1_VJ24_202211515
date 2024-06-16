@@ -151,7 +151,9 @@ SIF ::= IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2                  
         |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE LLAVE1 INSTRUCCIONES:c LLAVE2  {:   RESULT = new If_Else(a, b, c, aleft, aright);   :}
 ;
 
-SMATCH ::= MATCH EXPRESION:a LLAVE1 CASOS_S_S:b LLAVE2                     {:   RESULT = new Match(a, b, aleft, aright);   :}
+SMATCH ::=  MATCH EXPRESION:a LLAVE1 CASOS_S_S:b GUIONBAJO IGUAL MAYOR LLAVE1 INSTRUCCIONES:c LLAVE2 LLAVE2     {:   RESULT = new Match(a, b, c, aleft, aright);   :}
+            |MATCH EXPRESION:a LLAVE1 CASOS_S_S:b LLAVE2                                                        {:   RESULT = new Match(a, b, aleft, aright);   :}
+            |MATCH EXPRESION:a LLAVE1 GUIONBAJO IGUAL MAYOR LLAVE1 INSTRUCCIONES:b LLAVE2 LLAVE2                {:   RESULT = new Match(b, a, aleft, aright);   :}
 ;
 
 CASOS_S_S ::= CASOS_S_S:a CASOS_S:b            {: RESULT = a; RESULT.add(b); :}
