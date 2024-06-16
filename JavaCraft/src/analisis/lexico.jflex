@@ -73,6 +73,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "while"     {return new Symbol(sym.WHILE, yyline, yycolumn,yytext());}
 <YYINITIAL> "do"        {return new Symbol(sym.DO, yyline, yycolumn,yytext());}
 <YYINITIAL> "break"     {return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
+<YYINITIAL> "match"     {return new Symbol(sym.MATCH, yyline, yycolumn,yytext());} 
 
 
 
@@ -108,6 +109,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "^"     {return new Symbol(sym.XOR, yyline, yycolumn,yytext());}
 <YYINITIAL> "{"     {return new Symbol(sym.LLAVE1, yyline, yycolumn,yytext());}
 <YYINITIAL> "}"     {return new Symbol(sym.LLAVE2, yyline, yycolumn,yytext());}
+<YYINITIAL> "_"     {return new Symbol(sym.GUIONBAJO, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}
