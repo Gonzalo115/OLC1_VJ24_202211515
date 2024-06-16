@@ -85,6 +85,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Errores"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="reporte_erroresActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="ast">
               <Properties>

@@ -12,10 +12,12 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import excepciones.Errores;
 import Clases.Documento;
 import abstracto.Instruccion;
 import analisis.parser;
 import analisis.scanner;
+import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.StringReader;
@@ -29,6 +31,9 @@ import simbolo.tablaSimbolos;
 public class Principal extends javax.swing.JFrame {
 
     static private String rutaGlobal;
+    static LinkedList<Errores> erroresLexicos = new LinkedList<>();
+    static LinkedList<Errores> erroresSintacticos = new LinkedList<>();
+    static LinkedList<Errores> erroresSemanticos = new LinkedList<>();
 
     public Principal() {
         initComponents();
@@ -164,6 +169,11 @@ public class Principal extends javax.swing.JFrame {
 
         reporte_errores.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         reporte_errores.setText("Errores");
+        reporte_errores.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reporte_erroresActionPerformed(evt);
+            }
+        });
         reportes.add(reporte_errores);
 
         ast.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_DOWN_MASK));
@@ -244,6 +254,112 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
+    public String reporte() {
+        String html = "<body>\n";
+        html += "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">";
+        
+        html += "<center> <h1 > REPORTE DE ERRORES </h1>\n </center>";
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+        
+        //----------------------------------------------------------------
+        
+        html += "<h2 > ERRORES LEXICOS </h2>\n";
+
+        html += "<table class=\"table\">";
+        html += "<thead class=\"thead-dark\">";
+
+        // Se agregna los encabezados de la tabla
+        html += "<tr>\n";
+        html += "<th scope=\"col\"> TIPO </th>\n";
+        html += "<th scope=\"col\"> DESCRIPCION </th>\n";
+        html += "<th scope=\"col\"> LINEA </th>\n";
+        html += "<th scope=\"col\"> COLUMNA </th>\n";
+        html += "</tr>\n";
+        html += "</thead>";
+        html += "<tbody>";
+        // Se agregan las filas de la tabla
+        for (var i : erroresLexicos) {
+            html += "<tr>\n";
+            html += "<td>" + i.tipo + "</td>\n";
+            html += "<td>" + i.desc + "</td>\n";
+            html += "<td>" + i.linea + "</td>\n";
+            html += "<td>" + i.columna + "</td>\n";
+            html += "</tr>\n";
+        }
+        html += "</tbody>";
+        html += "</table>\n";
+        
+        
+         
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+        
+        //----------------------------------------------------------------
+        
+        html += "<h2 > ERRORES SINTACTICOS </h2>\n";
+
+        html += "<table class=\"table\">";
+        html += "<thead class=\"thead-dark\">";
+
+        // Se agregna los encabezados de la tabla
+        html += "<tr>\n";
+        html += "<th scope=\"col\"> TIPO </th>\n";
+        html += "<th scope=\"col\"> DESCRIPCION </th>\n";
+        html += "<th scope=\"col\"> LINEA </th>\n";
+        html += "<th scope=\"col\"> COLUMNA </th>\n";
+        html += "</tr>\n";
+        html += "</thead>";
+        html += "<tbody>";
+        // Se agregan las filas de la tabla
+        for (var i : erroresSintacticos) {
+            html += "<tr>\n";
+            html += "<td>" + i.tipo + "</td>\n";
+            html += "<td>" + i.desc + "</td>\n";
+            html += "<td>" + i.linea + "</td>\n";
+            html += "<td>" + i.columna + "</td>\n";
+            html += "</tr>\n";
+        }
+        html += "</tbody>";
+        html += "</table>\n";
+
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+        
+        //----------------------------------------------------------------
+        
+        html += "<h2 > ERRORES SEMANTICOS </h2>\n";
+
+        html += "<table class=\"table\">";
+        html += "<thead class=\"thead-dark\">";
+
+        // Se agregna los encabezados de la tabla
+        html += "<tr>\n";
+        html += "<th scope=\"col\"> TIPO </th>\n";
+        html += "<th scope=\"col\"> DESCRIPCION </th>\n";
+        html += "<th scope=\"col\"> LINEA </th>\n";
+        html += "<th scope=\"col\"> COLUMNA </th>\n";
+        html += "</tr>\n";
+        html += "</thead>";
+        html += "<tbody>";
+        // Se agregan las filas de la tabla
+        for (var i : erroresSemanticos) {
+            html += "<tr>\n";
+            html += "<td>" + i.tipo + "</td>\n";
+            html += "<td>" + i.desc + "</td>\n";
+            html += "<td>" + i.linea + "</td>\n";
+            html += "<td>" + i.columna + "</td>\n";
+            html += "</tr>\n";
+        }
+        html += "</tbody>";
+        html += "</table>\n";
+        html += "</body>";
+        return html;
+    }
+
 
     private void abrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirActionPerformed
         FileDialog fileDialog = new FileDialog((Frame) null);
@@ -267,7 +383,6 @@ public class Principal extends javax.swing.JFrame {
                         break;
                     }
                 }
-                
 
                 if (encontrada == false) {
                     try {
@@ -321,7 +436,7 @@ public class Principal extends javax.swing.JFrame {
 
 
     private void ejecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejecutarActionPerformed
-        
+
         try {
             String texto = CodigoTextArea.getText();
             scanner s = new scanner(new BufferedReader(new StringReader(texto)));
@@ -331,12 +446,46 @@ public class Principal extends javax.swing.JFrame {
             var tabla = new tablaSimbolos();
             tabla.setNombre("GLOBAL");
             ast.setConsola("");
-            for (var a : ast.getInstrucciones()) {
-                var res = a.interpretar(ast, tabla);
+
+            if (!erroresLexicos.isEmpty()) {
+                erroresLexicos.clear();
             }
-            String c = ast.getConsola();
-            c = c.replace('\"','"');
-            ConsolaTextArea.setText(c);
+
+            if (!erroresSintacticos.isEmpty()) {
+                erroresSintacticos.clear();
+            }
+
+            if (!erroresSemanticos.isEmpty()) {
+                erroresSemanticos.clear();
+            }
+
+            erroresLexicos.addAll(s.listaErrores);
+            erroresSintacticos.addAll(p.listaErrores);
+
+            for (var a : ast.getInstrucciones()) {
+                if (a == null) {
+                    continue;
+                }
+                var res = a.interpretar(ast, tabla);
+                if (res instanceof Errores) {
+                    erroresSemanticos.add((Errores) res);
+                }
+            }
+            ConsolaTextArea.setText(ast.getConsola());
+
+            System.out.println("----------------------ERRORES LEXICOS----------------------");
+            for (var i : erroresLexicos) {
+                System.out.println(i);
+            }
+            System.out.println("--------------------ERRORES SINTACTICOS---------------------");
+            for (var i : erroresSintacticos) {
+                System.out.println(i);
+            }
+            System.out.println("---------------------ERRORES SEMANTICOS----------------------");
+            for (var i : erroresSemanticos) {
+                System.out.println(i);
+            }
+
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
             System.out.println(ex);
@@ -407,8 +556,69 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_nuevoActionPerformed
 
     private void astActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_astActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_astActionPerformed
+
+    private void reporte_erroresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reporte_erroresActionPerformed
+
+        String tablaHtml = reporte();
+
+        FileDialog fileDialog = new FileDialog((Frame) null, "Nuevo", FileDialog.SAVE);
+        fileDialog.setFile("*.html");
+        fileDialog.setVisible(true);
+
+        String nombreArchivo = fileDialog.getFile();
+        String directorio = fileDialog.getDirectory();
+
+        if (nombreArchivo != null) {
+            String rutaCompleta = directorio + nombreArchivo;
+            File nuevoArchivo = new File(rutaCompleta);
+
+            try {
+                if (nuevoArchivo.createNewFile()) {
+                    JOptionPane.showMessageDialog(null, "Archivo creado exitosamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+                    try {
+
+                        FileWriter fileWriter;
+                        fileWriter = new FileWriter(rutaCompleta);
+                        fileWriter.write(tablaHtml);
+                        fileWriter.close();
+
+                        try {
+                            File archivoHTML = new File(rutaCompleta);
+
+                            // Verifica si el archivo existe
+                            if (!archivoHTML.exists()) {
+                                System.out.println("El archivo no existe.");
+                                return;
+                            }
+
+                            // Abre el archivo HTML en el navegador predeterminado
+                            if (Desktop.isDesktopSupported()) {
+                                Desktop desktop = Desktop.getDesktop();
+                                desktop.browse(archivoHTML.toURI());
+                            } else {
+                                System.out.println("La operación no es compatible en este sistema.");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "No se pudo generar html!", "Alerta", JOptionPane.WARNING_MESSAGE);
+                        System.out.println(e.getMessage());
+                        return;
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "El archivo ya existe en el directorio", "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al crear el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_reporte_erroresActionPerformed
 
     public static void main(String args[]) {
 

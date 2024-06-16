@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import abstracto.Instruccion;
 import simbolo.Tipo;
 import simbolo.tipoDato;
+import excepciones.Errores;
 
 //instrucciones
 import instrucciones.Print;
@@ -37,17 +38,20 @@ parser code
 {:
     scanner s;
     parser(scanner s){this.s = s;}
+    public LinkedList<Errores> listaErrores = new LinkedList<>();
     
     public void syntax_error(Symbol s){
-        System.out.println("Error Sintactico en la linea " +
-        (s.left) + " y columna " + (s.right) +
-        ". No se esperaba el componente: " + (s.value) + ".");
+        listaErrores.add(new Errores("SINTACTICO RECUPERABLE",
+                        "No se esperaba el componente "+s.value,
+                        s.left,
+                        s.right));
     }
 
     public void unrecovered_syntax_error (Symbol s){
-        System.out.println("Error Sintactico no recuperable en la linea" +
-        (s.left) + " y columna " + (s.right) +
-        ". No se esperaba el componente: " + (s.value) + ".");
+        listaErrores.add(new Errores("SINTACTICO NO RECUPERABLE",
+                        "No se esperaba el componente "+s.value,
+                        s.left,
+                        s.right));
     }
 
 :}
@@ -114,6 +118,7 @@ INSTRUCCION ::= IMPRESION:a         {:   RESULT=a;   :}
                 | CWHILE:a          {:   RESULT=a;   :}
                 | CDO_WHILE:a       {:   RESULT=a;   :}
                 | BREAKK:a          {:   RESULT=a;   :}
+                | error FINCADENA
 ;
 
 
@@ -133,7 +138,7 @@ DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                {:   RESULT 
 INCREMENTO ::= ID:a MAS_MAS FINCADENA                               {:   RESULT = new Incremento(a, aleft, aright);  :}
 ;
 
-DECREMENTO ::= ID:a MENOS_MENOS FINCADENA                           {:   RESULT = new Decremento(a, aleft, aright);  :}
+DECREMENTO ::= ID:a MENOS_MENOS FINCADENA                           {:   RESULT = new Decremento(a, aleft, aright);  :} 
 ;
 
 SIF ::= IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2                                      {:   RESULT = new If(a, b, aleft, aright);   :}
@@ -146,7 +151,6 @@ CFOR ::= FOR PAR1 ASIGNACION:a EXPRESION:b FINCADENA ACTUALIZA_FOR:c PAR2 LLAVE1
 ACTUALIZA_FOR ::= ID:a IGUAL EXPRESION:b {:   RESULT=new AsignacionVC(a, b, aleft, aright);  :}
                 |ID:a MAS_MAS            {:   RESULT = new Incremento(a, aleft, aright);  :}
                 |ID:a MENOS_MENOS        {:   RESULT = new Decremento(a, aleft, aright);  :}
-
 ;
 
 CWHILE ::= WHILE PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2  {:   RESULT = new While(a, b, aleft, aright);   :}
