@@ -38,7 +38,6 @@ public class Match extends Instruccion {
         this.defaul = defaul;
     }
 
-    
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         var cond = this.condicionE.interpretar(arbol, tabla);
@@ -86,6 +85,44 @@ public class Match extends Instruccion {
                     return resultado;
                 }
             }
+        } else {
+            var newTabla = new tablaSimbolos(tabla);
+            boolean caso_existe = false;
+            for (var i : this.c) {
+                var resultado = i.caso.interpretar(arbol, newTabla);
+
+                if (resultado instanceof Errores) {
+                    arbol.errores.add((Errores) resultado);
+                }
+
+                var prueba = this.condicionE;
+                if (cond == resultado) {
+                    var sol = i.interpretar(arbol, newTabla);
+                    if (sol instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
+                    caso_existe = true;
+                    break;
+                }
+            }
+
+            if (!caso_existe) {
+                for (var i : this.defaul) {
+                    if (i instanceof Break) {
+                        return i;
+                    }
+                    var resultado = i.interpretar(arbol, newTabla);
+
+                    if (resultado instanceof Errores) {
+                        arbol.errores.add((Errores) resultado);
+                    }
+
+                    if (resultado instanceof Break) {
+                        return resultado;
+                    }
+                }
+            }
+
         }
 
         return null;
