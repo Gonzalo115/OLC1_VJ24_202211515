@@ -50,6 +50,7 @@ public class sym {
   public static final int MENOR = 44;
   public static final int BREAK = 8;
   public static final int MAYOR = 46;
+  public static final int cuarto = 55;
   public static final int segundo = 53;
   public static final int ELSE = 19;
   public static final int PORCENTUAL = 36;
@@ -118,7 +119,8 @@ public class sym {
   "XOR",
   "primero",
   "segundo",
-  "tercero"
+  "tercero",
+  "cuarto"
   };
 }
 

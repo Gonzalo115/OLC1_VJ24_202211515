@@ -15,6 +15,7 @@ import instrucciones.AsignacionVC;
 import instrucciones.Incremento;
 import instrucciones.Decremento;
 import instrucciones.If;
+import instrucciones.Else_;
 import instrucciones.For;
 import instrucciones.While;
 import instrucciones.DoWhile;
@@ -80,21 +81,22 @@ terminal IGUAL_IGUAL, NOT_IGUAL, MENOR, MENOR_IGUAL, MAYOR, MAYOR_IGUAL;
 
 terminal NOT, OR, AND, XOR;
 
-terminal primero, segundo, tercero;
-
+terminal primero, segundo, tercero, cuarto;
 
 //no terminales
 nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
 nonterminal Instruccion INSTRUCCION;
 nonterminal LinkedList<Casos> CASOS_S_S; 
 nonterminal Casos CASOS_S;
-nonterminal LinkedList<If> ELSE_IF;
-nonterminal If ELSE_IF_S;
+nonterminal LinkedList<Else_> ELSE_IF_LIST;
+nonterminal Else_ ELSE_IF_CLAUSE; //Else_ OPTIONAL_ELSE_IF_LIST, 
+//nonterminal Instruccion OPTIONAL_ELSE;
 nonterminal Instruccion IMPRESION, DECLARACION, ASIGNACION, INCREMENTO, DECREMENTO, SIF, CFOR, CWHILE, CDO_WHILE, SMATCH, ACTUALIZA_FOR;
 nonterminal Instruccion BREAKK, CONTINUEE;
 nonterminal Tipo TIPOS;
 nonterminal Instruccion EXPRESION;
 
+precedence nonassoc cuarto;
 precedence nonassoc tercero;
 precedence nonassoc segundo;
 precedence nonassoc primero;
@@ -157,18 +159,17 @@ INCREMENTO ::= ID:a MAS_MAS FINCADENA                               {:   RESULT 
 DECREMENTO ::= ID:a MENOS_MENOS FINCADENA                           {:   RESULT = new Decremento(a, aleft, aright);  :} 
 ;
 
-SIF ::= IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE ELSE_IF:c                            {: RESULT = new If(b, c, a, aleft, aright); :}%prec segundo
-        |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE LLAVE1 INSTRUCCIONES:c LLAVE2    {: RESULT = new If(a, b, c, aleft, aright); :}%prec primero
-        |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2                                       {: RESULT = new If(a, b, aleft, aright); :}%prec tercero
+SIF ::= IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE_IF_LIST:c ELSE LLAVE1 INSTRUCCIONES:d LLAVE2     {: RESULT = new If(a, b, c, d, aleft, aright); :}%prec primero
+    |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE_IF_LIST:c                                           {: RESULT = new If(a, b, c, aleft, aright); :}%prec segundo
+    |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE LLAVE1 INSTRUCCIONES:c LLAVE2                       {: RESULT = new If(b, a, c, aleft, aright); :}%prec tercero
+    |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2                                                          {: RESULT = new If(a, b, aleft, aright); :}%prec cuarto
 ;
 
-ELSE_IF ::= ELSE_IF:a ELSE_IF_S:b                                                     {: RESULT = a; RESULT.add(b); :}
-          | ELSE_IF_S:a                                                               {: RESULT = new LinkedList<>(); RESULT.add(a); :}  
+ELSE_IF_LIST ::= ELSE_IF_LIST:a ELSE_IF_CLAUSE:b        {: RESULT = a; RESULT.add(b); :}
+               | ELSE_IF_CLAUSE:a                       {: RESULT = new LinkedList<>(); RESULT.add(a); :}
 ;
 
-ELSE_IF_S ::=    IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2                                     {: RESULT = new If(a, b, aleft, aright); :}%prec primero
-                |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE                                {: RESULT = new If(a, b, aleft, aright); :}%prec segundo
-                |IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 ELSE LLAVE1 INSTRUCCIONES:c LLAVE2  {:   RESULT = new If(a, b, c, aleft, aright);   :}
+ELSE_IF_CLAUSE ::= ELSE IF PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2 {: RESULT = new Else_(new Condicion(a, aleft, aright), b, aleft, aright); :}
 ;
 
 SMATCH ::=  MATCH EXPRESION:a LLAVE1 CASOS_S_S:b GUIONBAJO IGUAL MAYOR LLAVE1 INSTRUCCIONES:c LLAVE2 LLAVE2     {:   RESULT = new Match(a, b, c, aleft, aright);   :}
@@ -236,7 +237,7 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | DECIMAL:a                                 {: RESULT = new Nativo(Double.parseDouble(a), new Tipo(tipoDato.DECIMAL), aleft, aright); :}
             | CADENA:a                                  {: RESULT = new Nativo(a, new Tipo(tipoDato.CADENA), aleft, aright); :}
             | CARACTER:a                                {: RESULT = new Nativo(a, new Tipo(tipoDato.CARACTER), aleft, aright); :}
-            | BOOLEANO:a                                {: RESULT = new Nativo(a, new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
+            | BOOLEANO:a                                {: RESULT = new Nativo(Boolean.valueOf(((String) a).toLowerCase()), new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
 
             | ID:a                                      {: RESULT = new AccesoVC(a, aleft, aright);   :}
             | PAR1 EXPRESION:a PAR2                     {: RESULT = a;    :}

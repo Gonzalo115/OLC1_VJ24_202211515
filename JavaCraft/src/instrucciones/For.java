@@ -31,16 +31,16 @@ public class For extends Instruccion {
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         //creamos un nuevo entorno
-        var newTabla = new tablaSimbolos(tabla);
+        var tabla_For = new tablaSimbolos(tabla);
 
         // asignacion/declaracion
-        var res1 = this.asignacion.interpretar(arbol, tabla);
+        var res1 = this.asignacion.interpretar(arbol, tabla_For);
         if (res1 instanceof Errores) {
             return res1;
         }
 
         //validar la condicion -> Booleano
-        var cond = this.condicion.interpretar(arbol, tabla);
+        var cond = this.condicion.interpretar(arbol, tabla_For);
         if (cond instanceof Errores) {
             return cond;
         }
@@ -50,9 +50,9 @@ public class For extends Instruccion {
                     this.linea, this.col);
         }
 
-        while ((boolean) this.condicion.interpretar(arbol, tabla)) {
+        while ((boolean) this.condicion.interpretar(arbol, tabla_For)) {
             //nuevo entorno
-            var newTabla2 = new tablaSimbolos(newTabla);
+            var tabla_for_ins = new tablaSimbolos(tabla_For);
 
             //ejecutar instrucciones
             for (var i : this.instrucciones) {
@@ -60,19 +60,20 @@ public class For extends Instruccion {
                     return null;
                 }
                 if (i instanceof Continue) {
-                    return null;
+                    break;
+                    //return null;
                 }
-                var resIns = i.interpretar(arbol, tabla);
+                var resIns = i.interpretar(arbol, tabla_for_ins);
                 if (resIns instanceof Break) {
                     return null;
                 }
                 if (resIns instanceof Continue) {
-                    return null;
+                    break;
+                    //return null;
                 }
             }
 
-            //actualizar la variable
-            var act = this.actualizacion.interpretar(arbol, tabla);
+            var act = this.actualizacion.interpretar(arbol, tabla_For);
             if (act instanceof Errores) {
                 return act;
             }

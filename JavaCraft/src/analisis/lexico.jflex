@@ -10,6 +10,7 @@ import excepciones.Errores;
 //codigo de usuario
 %{
 public LinkedList<Errores> listaErrores = new LinkedList<>();
+String cadena = "";
 %}
 
 %init{
@@ -32,6 +33,7 @@ public LinkedList<Errores> listaErrores = new LinkedList<>();
 // Estados léxicos
 %state COMENT_MULTI
 %state COMENT_SIMPLE
+%state CADENA
 
 
 //simbolos del sistema
@@ -39,7 +41,7 @@ public LinkedList<Errores> listaErrores = new LinkedList<>();
 BLANCOS=[\ \r\t\f\n]+
 ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
-CADENA = [\"]((\\n)|(\\\")|(\\\\)|(\\t)|(\\\')|([^\"]))*[\"]
+//CADENA = [\"]((\\n)|(\\\")|(\\\\)|(\\t)|(\\\')|([^\"]))*[\"]
 BOOLEANO = ((true)|(false)) 
 CARACTER= ('[^\ \r\t\f\n]')
 ID=[a-zA-z][a-zA-Z0-9_]*
@@ -121,12 +123,37 @@ ID=[a-zA-z][a-zA-Z0-9_]*
     return new Symbol(sym.CARACTER, yyline, yycolumn,caracter);
     }
 
-<YYINITIAL> {CADENA} {
-    String cadena = yytext();
-    cadena = cadena.substring(1, cadena.length()-1);
-    return new Symbol(sym.CADENA, yyline, yycolumn,cadena);
 
+
+
+<YYINITIAL> [\"]        {cadena = ""; yybegin(CADENA);}
+
+<CADENA> {
+    [\"] {
+        String tmp = cadena;
+        cadena = "";
+        yybegin(YYINITIAL);
+        return new Symbol(sym.CADENA, yyline, yycolumn, tmp);
     }
+    \\n {
+        cadena += "\n";
+    }
+    \\\\ {
+        cadena += "\\";
+    }
+    \\t {
+        cadena += "\t";
+    }
+    \\\' {
+        cadena += "\'";
+    }
+    \\\" {
+        cadena += '"';
+    }
+    [^\r\t\f\n] {
+        cadena += yytext();
+    }
+}
 
 //Ignorar Espacios en blanco
 <YYINITIAL> {BLANCOS} {}

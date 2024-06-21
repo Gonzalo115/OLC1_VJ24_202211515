@@ -60,12 +60,11 @@ public class Match extends Instruccion {
                     arbol.errores.add((Errores) resultado);
                 }
 
-                var prueba = this.condicionE;
                 if (cond == resultado) {
                     var sol = i.interpretar(arbol, newTabla);
                     if (sol instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
-                    }
+                }
                     break;
                 }
             }
@@ -127,13 +126,4 @@ public class Match extends Instruccion {
 
         return null;
     }
-
-    public static boolean toBoolean(Object obj) {
-        if (obj instanceof String) {
-            return Boolean.valueOf(((String) obj).toLowerCase());
-        } else {
-            return (boolean) obj;
-        }
-    }
-
 }

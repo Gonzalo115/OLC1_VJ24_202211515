@@ -17,7 +17,6 @@ import simbolo.*;
 public class Casos extends Instruccion {
     public Condicion caso; 
     public LinkedList<Instruccion> ejecucion;
-    public boolean evaluado = false;
     
     public Casos(Condicion caso, LinkedList<Instruccion> ejecucion, int linea, int col) {
         super(new Tipo(tipoDato.VOID), linea, col);
