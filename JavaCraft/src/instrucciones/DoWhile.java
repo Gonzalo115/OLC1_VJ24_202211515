@@ -26,11 +26,12 @@ public class DoWhile extends Instruccion {
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-        //creamos un nuevo entorno
-        var newTabla = new tablaSimbolos(tabla);
+        //Entorno Do While
+        var tabla_DoWhile = new tablaSimbolos(tabla, tabla.getNombre() + "_DoWhile");
+        tablaSimbolos tabla_res = null;
 
         //validar la condicion -> Booleano
-        var cond = this.condicion.interpretar(arbol, newTabla);
+        var cond = this.condicion.interpretar(arbol, tabla_DoWhile);
         if (cond instanceof Errores) {
             return cond;
         }
@@ -42,21 +43,35 @@ public class DoWhile extends Instruccion {
 
         do {
             //nuevo entorno
-            var newTabla2 = new tablaSimbolos(newTabla);
+            var tabla_DoWhile_ins = new tablaSimbolos(tabla_DoWhile, tabla.getNombre() + "_DoWhileInst");
 
             //ejecutar instrucciones
             for (var i : this.instrucciones) {
                 if (i instanceof Break) {
                     return null;
                 }
-                var resIns = i.interpretar(arbol, newTabla2);
+                if (i instanceof Continue) {
+                    break;
+                    //return null;
+                }
+                var resIns = i.interpretar(arbol, tabla_DoWhile_ins);
                 if (resIns instanceof Break) {
                     return null;
                 }
+                if (resIns instanceof Continue) {
+                    break;
+                    //return null;
+                }
             }
-        } while ((boolean) this.condicion.interpretar(arbol, newTabla));
 
-        
+            if (!(boolean) this.condicion.interpretar(arbol, tabla_DoWhile)) {
+                tabla_res = tabla_DoWhile_ins;
+            }
+
+        } while ((boolean) this.condicion.interpretar(arbol, tabla_DoWhile));
+
+        arbol.addEntornos(tabla_DoWhile);
+        arbol.addEntornos(tabla_res);
         return null;
     }
 }

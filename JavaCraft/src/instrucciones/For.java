@@ -31,8 +31,9 @@ public class For extends Instruccion {
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         //creamos un nuevo entorno
-        var tabla_For = new tablaSimbolos(tabla);
-
+        var tabla_For = new tablaSimbolos(tabla, tabla.getNombre() + "_For");
+        tablaSimbolos tabla_res = null;
+        
         // asignacion/declaracion
         var res1 = this.asignacion.interpretar(arbol, tabla_For);
         if (res1 instanceof Errores) {
@@ -52,7 +53,7 @@ public class For extends Instruccion {
 
         while ((boolean) this.condicion.interpretar(arbol, tabla_For)) {
             //nuevo entorno
-            var tabla_for_ins = new tablaSimbolos(tabla_For);
+            var tabla_for_ins = new tablaSimbolos(tabla_For, tabla.getNombre() + "_ForInst");
 
             //ejecutar instrucciones
             for (var i : this.instrucciones) {
@@ -77,7 +78,14 @@ public class For extends Instruccion {
             if (act instanceof Errores) {
                 return act;
             }
+            if (!(boolean) this.condicion.interpretar(arbol, tabla_For)) {
+                tabla_res = tabla_for_ins;
+            }
         }
+        
+        
+        //arbol.addEntornos(tabla_For);
+        arbol.addEntornos(tabla_res);
         return null;
     }
 }

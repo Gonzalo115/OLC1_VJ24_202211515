@@ -13,18 +13,18 @@ import java.util.HashMap;
 public class tablaSimbolos {
 
     private tablaSimbolos tablaAnterior;
-    private HashMap<String, Object> tablaActual;
-    private String nombre;
+    public HashMap<String, Object> tablaActual;
+    public String nombre;
 
     public tablaSimbolos() {
         this.tablaActual = new HashMap<>();
         this.nombre = "";
     }
 
-    public tablaSimbolos(tablaSimbolos tablaAnterior) {
+    public tablaSimbolos(tablaSimbolos tablaAnterior, String nombre) {
         this.tablaAnterior = tablaAnterior;
         this.tablaActual = new HashMap<>();
-        this.nombre = "";
+        this.nombre = nombre;
     }
 
     public tablaSimbolos getTablaAnterior() {
@@ -52,13 +52,9 @@ public class tablaSimbolos {
     }
 
     public boolean setVariable(simbolo simbolo) {
-        simbolo busqueda
-                = (simbolo) this.tablaActual.get(
-                        simbolo.getId().
-                                toLowerCase());
+        simbolo busqueda = (simbolo) this.tablaActual.get(simbolo.getId().toLowerCase());
         if (busqueda == null) {
-            this.tablaActual.put(simbolo.getId().toLowerCase(),
-                    simbolo);
+            this.tablaActual.put(simbolo.getId().toLowerCase(), simbolo);
             return true;
         }
         return false;
@@ -66,12 +62,38 @@ public class tablaSimbolos {
 
     public simbolo getVariable(String id) {
         for (tablaSimbolos i = this; i != null; i = i.getTablaAnterior()) {
-            simbolo busqueda = (simbolo) i.tablaActual.
-                    get(id.toLowerCase());
+            simbolo busqueda = (simbolo) i.tablaActual.get(id.toLowerCase());
             if (busqueda != null) {
                 return busqueda;
             }
         }
         return null;
     }
+
+    public String tablaHtml() {
+
+        String html = "";
+
+        for (String key : this.tablaActual.keySet()) {
+            simbolo value = (simbolo) this.tablaActual.get(key);
+            System.out.println("Key: " + key + ", Value: " + value);
+
+            html += "<tr>\n";
+            html += "<td>" + value.getId() + "</td>\n";
+            if (value.getMutable()) {
+                html += "<td>Variable</td>\n";
+            }else{
+                html += "<td>Constante</td>\n";
+            }
+            html += "<td>" + value.getTipo().getTipo() + "</td>\n";
+            html += "<td>" + this.nombre + "</td>\n";
+            html += "<td>" + value.getValor() + "</td>\n";
+            html += "<td>" + value.getLinea() + "</td>\n";
+            html += "<td>" + value.getColumna() + "</td>\n";
+            html += "</tr>\n";
+            System.out.println(html);
+        }
+        return html;
+    }
+
 }

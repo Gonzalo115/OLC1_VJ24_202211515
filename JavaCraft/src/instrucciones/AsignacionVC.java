@@ -25,30 +25,29 @@ public class AsignacionVC extends Instruccion {
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-        //variable exista
+
         var variable = tabla.getVariable(id);
         if (variable == null) {
-            return new Errores("SEMANTICO", "Variable no exitente",
-                    this.linea, this.col);
+            return new Errores("SEMANTICO", "Variable no exitente", this.linea, this.col);
         }
 
         if (!variable.mutable) {
             return new Errores("SEMANTICO", "Esta Tratando de Asignar un Valor a una variable CONST", this.linea, this.col);
         }
 
-        // interpretar el nuevo valor a asignar
+
         var newValor = this.exp.interpretar(arbol, tabla);
         if (newValor instanceof Errores) {
             return newValor;
         }
 
-        //validar tipos
+
         if (variable.getTipo().getTipo() != this.exp.tipo.getTipo()) {
             return new Errores("SEMANTICO", "El tipo de variable "+variable.getTipo().getTipo()+" y el tipo de dato "+this.exp.tipo.getTipo()+" No coicide. ",
                     this.linea, this.col);
         }
 
-        //this.tipo.setTipo(variable.getTipo().getTipo());
+
         variable.setValor(newValor);
         return null;
     }

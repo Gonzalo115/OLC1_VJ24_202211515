@@ -18,22 +18,19 @@ public class While extends Instruccion {
     private Instruccion condicion;
     private LinkedList<Instruccion> instrucciones;
 
-
     public While(Instruccion condicion, LinkedList<Instruccion> instrucciones, int linea, int col) {
         super(new Tipo(tipoDato.VOID), linea, col);
         this.condicion = condicion;
         this.instrucciones = instrucciones;
     }
-    
-    
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-        //creamos un nuevo entorno
-        var newTabla = new tablaSimbolos(tabla);
 
-        //validar la condicion -> Booleano
-        var cond = this.condicion.interpretar(arbol, newTabla);
+        var tabla_While = new tablaSimbolos(tabla, tabla.getNombre() + "_While");
+        tablaSimbolos tabla_res = null;
+
+        var cond = this.condicion.interpretar(arbol, tabla_While);
         if (cond instanceof Errores) {
             return cond;
         }
@@ -43,21 +40,35 @@ public class While extends Instruccion {
                     this.linea, this.col);
         }
 
-        while ((boolean) this.condicion.interpretar(arbol, newTabla)) {
-            //nuevo entorno
-            var newTabla2 = new tablaSimbolos(newTabla);
+        while ((boolean) this.condicion.interpretar(arbol, tabla_While)) {
 
-            //ejecutar instrucciones
+            var tabla_While_ins = new tablaSimbolos(tabla_While, tabla_While.getNombre() + "_WhileInst");
+
             for (var i : this.instrucciones) {
                 if (i instanceof Break) {
                     return null;
                 }
-                var resIns = i.interpretar(arbol, newTabla2);
+                if (i instanceof Continue) {
+                    break;
+                    //return null;
+                }
+                var resIns = i.interpretar(arbol, tabla_While_ins);
                 if (resIns instanceof Break) {
                     return null;
                 }
+                if (resIns instanceof Continue) {
+                    break;
+                    //return null;
+                }
+            }
+
+            if (!(boolean) this.condicion.interpretar(arbol, tabla_While_ins)) {
+                tabla_res = tabla_While_ins;
             }
         }
+
+        arbol.addEntornos(tabla_While);
+        arbol.addEntornos(tabla_res);
         return null;
     }
 }

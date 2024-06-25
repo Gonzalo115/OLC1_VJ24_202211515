@@ -54,8 +54,6 @@ public class If extends Instruccion {
         this.instruccionesT = instruccionesT;
     }
 
-
-
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         var cond = this.condicion.interpretar(arbol, tabla);
@@ -70,6 +68,8 @@ public class If extends Instruccion {
                     this.linea, this.col);
         }
 
+        tablaSimbolos tabla_if2 = new tablaSimbolos(tabla, tabla.getNombre() + "_if");
+
         if (this.If_anidados == null && this.instruccionesF == null) { // if(----){------}
             if ((boolean) cond) {
                 for (var i : this.instruccionesT) {
@@ -79,7 +79,7 @@ public class If extends Instruccion {
                     if (i instanceof Continue) {
                         return i;
                     }
-                    var resultado = i.interpretar(arbol, tabla);
+                    var resultado = i.interpretar(arbol, tabla_if2);
 
                     if (resultado instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
@@ -100,7 +100,7 @@ public class If extends Instruccion {
                     if (i instanceof Continue) {
                         return i;
                     }
-                    var resultado = i.interpretar(arbol, tabla);
+                    var resultado = i.interpretar(arbol, tabla_if2);
 
                     if (resultado instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
@@ -118,7 +118,7 @@ public class If extends Instruccion {
                     if (i instanceof Continue) {
                         return i;
                     }
-                    var resultado = i.interpretar(arbol, tabla);
+                    var resultado = i.interpretar(arbol, tabla_if2);
 
                     if (resultado instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
@@ -138,7 +138,7 @@ public class If extends Instruccion {
                     if (i instanceof Continue) {
                         return i;
                     }
-                    var resultado = i.interpretar(arbol, tabla);
+                    var resultado = i.interpretar(arbol, tabla_if2);
 
                     if (resultado instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
@@ -156,8 +156,10 @@ public class If extends Instruccion {
                         arbol.errores.add((Errores) condF);
                     }
 
+                   
+
                     if ((boolean) condF) {
-                        var sol = i.interpretar(arbol, tabla);
+                        var sol = i.interpretar(arbol, tabla_if2);
                         if (sol instanceof Errores) {
                             arbol.errores.add((Errores) condF);
                         }
@@ -181,7 +183,7 @@ public class If extends Instruccion {
                     if (i instanceof Continue) {
                         return i;
                     }
-                    var resultado = i.interpretar(arbol, tabla);
+                    var resultado = i.interpretar(arbol, tabla_if2);
 
                     if (resultado instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
@@ -199,8 +201,9 @@ public class If extends Instruccion {
                         arbol.errores.add((Errores) condF);
                     }
 
+
                     if ((boolean) condF) {
-                        var sol = i.interpretar(arbol, tabla);
+                        var sol = i.interpretar(arbol, tabla_if2);
                         if (sol instanceof Errores) {
                             arbol.errores.add((Errores) condF);
                         }
@@ -223,7 +226,7 @@ public class If extends Instruccion {
                     if (i instanceof Continue) {
                         return i;
                     }
-                    var resultado = i.interpretar(arbol, tabla);
+                    var resultado = i.interpretar(arbol, tabla_if2);
 
                     if (resultado instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
@@ -235,7 +238,7 @@ public class If extends Instruccion {
                 }
             }
         }
-
+        arbol.addEntornos(tabla_if2);
         return null;
     }
 }

@@ -34,6 +34,7 @@ public class Principal extends javax.swing.JFrame {
     static LinkedList<Errores> erroresLexicos = new LinkedList<>();
     static LinkedList<Errores> erroresSintacticos = new LinkedList<>();
     static LinkedList<Errores> erroresSemanticos = new LinkedList<>();
+    static LinkedList<tablaSimbolos> tablaSimbolos = new LinkedList<>();
 
     public Principal() {
         initComponents();
@@ -72,8 +73,10 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaPestañas = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
-        ConsolaTextArea = new javax.swing.JTextArea();
+        Consola2 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        Consola1 = new javax.swing.JTextArea();
         menu = new javax.swing.JMenuBar();
         archivo = new javax.swing.JMenu();
         nuevo = new javax.swing.JMenuItem();
@@ -103,14 +106,20 @@ public class Principal extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tablaPestañas);
 
-        ConsolaTextArea.setBackground(new java.awt.Color(153, 153, 153));
-        ConsolaTextArea.setColumns(20);
-        ConsolaTextArea.setForeground(new java.awt.Color(255, 255, 255));
-        ConsolaTextArea.setRows(5);
-        jScrollPane3.setViewportView(ConsolaTextArea);
+        Consola2.setBackground(new java.awt.Color(153, 153, 153));
+        Consola2.setColumns(20);
+        Consola2.setForeground(new java.awt.Color(255, 255, 255));
+        Consola2.setRows(5);
+        jScrollPane3.setViewportView(Consola2);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("CONSOLA");
+
+        Consola1.setBackground(new java.awt.Color(153, 153, 153));
+        Consola1.setColumns(20);
+        Consola1.setForeground(new java.awt.Color(255, 255, 255));
+        Consola1.setRows(5);
+        jScrollPane4.setViewportView(Consola1);
 
         archivo.setText("Archivo");
 
@@ -187,6 +196,11 @@ public class Principal extends javax.swing.JFrame {
 
         reporte_tabla_de_simbolos.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         reporte_tabla_de_simbolos.setText("Tabla de Símbolos");
+        reporte_tabla_de_simbolos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reporte_tabla_de_simbolosActionPerformed(evt);
+            }
+        });
         reportes.add(reporte_tabla_de_simbolos);
 
         menu.add(reportes);
@@ -202,11 +216,19 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 681, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,10 +236,12 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane4)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
@@ -252,14 +276,13 @@ public class Principal extends javax.swing.JFrame {
     public String reporte() {
         String html = "<body>\n";
         html += "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">";
-        
+
         html += "<center> <h1 > REPORTE DE ERRORES </h1>\n </center>";
         html += "<h1 ></h1>\n";
         html += "<h1 ></h1>\n";
         html += "<h1 ></h1>\n";
-        
+
         //----------------------------------------------------------------
-        
         html += "<h2 > ERRORES LEXICOS </h2>\n";
 
         html += "<table class=\"table\">";
@@ -285,15 +308,12 @@ public class Principal extends javax.swing.JFrame {
         }
         html += "</tbody>";
         html += "</table>\n";
-        
-        
-         
+
         html += "<h1 ></h1>\n";
         html += "<h1 ></h1>\n";
         html += "<h1 ></h1>\n";
-        
+
         //----------------------------------------------------------------
-        
         html += "<h2 > ERRORES SINTACTICOS </h2>\n";
 
         html += "<table class=\"table\">";
@@ -323,9 +343,8 @@ public class Principal extends javax.swing.JFrame {
         html += "<h1 ></h1>\n";
         html += "<h1 ></h1>\n";
         html += "<h1 ></h1>\n";
-        
+
         //----------------------------------------------------------------
-        
         html += "<h2 > ERRORES SEMANTICOS </h2>\n";
 
         html += "<table class=\"table\">";
@@ -352,6 +371,45 @@ public class Principal extends javax.swing.JFrame {
         html += "</tbody>";
         html += "</table>\n";
         html += "</body>";
+        return html;
+    }
+
+    public String tablaSimbolos() {
+        String html = "<body>\n";
+        html += "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">";
+
+        html += "<center> <h1 > TABLAS DE SIMBOLOS </h1></center>\n ";
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+        html += "<h1 ></h1>\n";
+
+        //----------------------------------------------------------------
+        html += "<table class=\"table\">";
+        html += "<thead class=\"thead-dark\">";
+
+        // Se agregna los encabezados de la tabla
+        html += "<tr>\n";
+        html += "<th scope=\"col\"> ID </th>\n";
+        html += "<th scope=\"col\"> TIPO </th>\n";
+        html += "<th scope=\"col\"> TIPO DATO </th>\n";
+        html += "<th scope=\"col\"> ENTORNO </th>\n";
+        html += "<th scope=\"col\"> VALOR </th>\n";
+        html += "<th scope=\"col\"> LINEA </th>\n";
+        html += "<th scope=\"col\"> COLUMNA </th>\n";
+        //html += "<th scope=\"col\"> LINEA </th>\n";
+        //html += "<th scope=\"col\"> COLUMNA </th>\n";
+        html += "</tr>\n";
+        html += "</thead>";
+        html += "<tbody>";
+        // Se agregan las filas de la tabla
+        for (var i : tablaSimbolos) {
+            html += i.tablaHtml();
+        }
+        html += "</tbody>";
+        html += "</table>\n";
+
+        html += "<h1 ></h1>\n";
+
         return html;
     }
 
@@ -454,6 +512,10 @@ public class Principal extends javax.swing.JFrame {
                 erroresSemanticos.clear();
             }
 
+            if (!tablaSimbolos.isEmpty()) {
+                tablaSimbolos.clear();
+            }
+
             erroresLexicos.addAll(s.listaErrores);
             erroresSintacticos.addAll(p.listaErrores);
 
@@ -466,20 +528,32 @@ public class Principal extends javax.swing.JFrame {
                     erroresSemanticos.add((Errores) res);
                 }
             }
-            ConsolaTextArea.setText(ast.getConsola());
+            
+            
+            
+            Consola1.setText(ast.getConsola());
 
-            System.out.println("----------------------ERRORES LEXICOS----------------------");
+            tablaSimbolos.addFirst(tabla);
+            tablaSimbolos.addAll(ast.entornos);
+
+            String consola = "";
+            
+            consola += "----------------------ERRORES LEXICOS----------------------\n";
             for (var i : erroresLexicos) {
-                System.out.println(i);
+                consola +=  i.toString();
             }
-            System.out.println("--------------------ERRORES SINTACTICOS---------------------");
+
+            consola += "--------------------ERRORES SINTACTICOS---------------------\n";
             for (var i : erroresSintacticos) {
-                System.out.println(i);
+                consola += i.toString();
             }
-            System.out.println("---------------------ERRORES SEMANTICOS----------------------");
+
+            consola += "---------------------ERRORES SEMANTICOS----------------------\n";
             for (var i : erroresSemanticos) {
-                System.out.println(i);
+                consola += i.toString();
             }
+            
+            Consola2.setText(consola);
 
         } catch (Exception ex) {
             System.out.println("Algo salio mal");
@@ -615,6 +689,66 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_reporte_erroresActionPerformed
 
+    private void reporte_tabla_de_simbolosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reporte_tabla_de_simbolosActionPerformed
+        String tablaHtml = tablaSimbolos();
+
+        FileDialog fileDialog = new FileDialog((Frame) null, "Nuevo", FileDialog.SAVE);
+        fileDialog.setFile("*.html");
+        fileDialog.setVisible(true);
+
+        String nombreArchivo = fileDialog.getFile();
+        String directorio = fileDialog.getDirectory();
+
+        if (nombreArchivo != null) {
+            String rutaCompleta = directorio + nombreArchivo;
+            File nuevoArchivo = new File(rutaCompleta);
+
+            try {
+                if (nuevoArchivo.createNewFile()) {
+                    JOptionPane.showMessageDialog(null, "Archivo creado exitosamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+                    try {
+
+                        FileWriter fileWriter;
+                        fileWriter = new FileWriter(rutaCompleta);
+                        fileWriter.write(tablaHtml);
+                        fileWriter.close();
+
+                        try {
+                            File archivoHTML = new File(rutaCompleta);
+
+                            // Verifica si el archivo existe
+                            if (!archivoHTML.exists()) {
+                                System.out.println("El archivo no existe.");
+                                return;
+                            }
+
+                            // Abre el archivo HTML en el navegador predeterminado
+                            if (Desktop.isDesktopSupported()) {
+                                Desktop desktop = Desktop.getDesktop();
+                                desktop.browse(archivoHTML.toURI());
+                            } else {
+                                System.out.println("La operación no es compatible en este sistema.");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "No se pudo generar html!", "Alerta", JOptionPane.WARNING_MESSAGE);
+                        System.out.println(e.getMessage());
+                        return;
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "El archivo ya existe en el directorio", "Información", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al crear el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_reporte_tabla_de_simbolosActionPerformed
+
     public static void main(String args[]) {
 
         try {
@@ -645,7 +779,8 @@ public class Principal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea CodigoTextArea;
-    private javax.swing.JTextArea ConsolaTextArea;
+    private javax.swing.JTextArea Consola1;
+    private javax.swing.JTextArea Consola2;
     private javax.swing.JMenuItem abrir;
     private javax.swing.JMenu archivo;
     private javax.swing.JMenuItem ast;
@@ -657,6 +792,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JMenuBar menu;
     private javax.swing.JMenuItem nuevo;
     private javax.swing.JMenuItem reporte_errores;

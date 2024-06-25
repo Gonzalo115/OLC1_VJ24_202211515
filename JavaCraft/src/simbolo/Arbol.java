@@ -16,8 +16,9 @@ public class Arbol {
 
     private LinkedList<Instruccion> instrucciones;
     private String consola;
-    private tablaSimbolos tablaGlobal;
+    public tablaSimbolos tablaGlobal;
     public LinkedList<Errores> errores;
+    public LinkedList<tablaSimbolos> entornos = new LinkedList<>();
 
     public Arbol(LinkedList<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
@@ -56,6 +57,18 @@ public class Arbol {
 
     public void setErrores(LinkedList<Errores> errores) {
         this.errores = errores;
+    }
+
+    public LinkedList<tablaSimbolos> getEntornos() {
+        return entornos;
+    }
+
+    public void setEntornos(LinkedList<tablaSimbolos> entornos) {
+        this.entornos = entornos;
+    }
+
+    public void addEntornos(tablaSimbolos tablaEntorno) {
+        this.entornos.add(tablaEntorno);
     }
 
     public void Print(String valor) {

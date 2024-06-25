@@ -14,5 +14,7 @@ public enum tipoDato {
     BOOLEANO,
     CARACTER,
     CADENA,
+    VECTOR_1,
+    VECTOR_2,
     VOID
 }

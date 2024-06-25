@@ -50,31 +50,36 @@ public class Match extends Instruccion {
                     this.linea, this.col);
         }
 
+        var tablaMatch = new tablaSimbolos(tabla, tabla.getNombre() + "_Match");
+        tablaSimbolos tabla_res = null;
+
         if (this.defaul == null) {
-            var newTabla = new tablaSimbolos(tabla);
 
             for (var i : this.c) {
-                var resultado = i.caso.interpretar(arbol, newTabla);
+                var resultado = i.caso.interpretar(arbol, tablaMatch);
 
                 if (resultado instanceof Errores) {
                     arbol.errores.add((Errores) resultado);
                 }
 
                 if (cond == resultado) {
-                    var sol = i.interpretar(arbol, newTabla);
+                    var tabla_match_int = new tablaSimbolos(tabla, tabla.getNombre() + "_MatchInst");
+                    tabla_res = tabla_match_int;
+                    var sol = i.interpretar(arbol, tabla_match_int);
                     if (sol instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
-                }
+                    }
                     break;
                 }
             }
         } else if (this.c == null) {
-            var newTabla = new tablaSimbolos(tabla);
+            var tabla_match_int = new tablaSimbolos(tabla, tabla.getNombre() + "_MatchInst");
+            tabla_res = tabla_match_int;
             for (var i : this.defaul) {
                 if (i instanceof Break) {
                     return i;
                 }
-                var resultado = i.interpretar(arbol, newTabla);
+                var resultado = i.interpretar(arbol, tabla_match_int);
 
                 if (resultado instanceof Errores) {
                     arbol.errores.add((Errores) resultado);
@@ -85,10 +90,9 @@ public class Match extends Instruccion {
                 }
             }
         } else {
-            var newTabla = new tablaSimbolos(tabla);
             boolean caso_existe = false;
             for (var i : this.c) {
-                var resultado = i.caso.interpretar(arbol, newTabla);
+                var resultado = i.caso.interpretar(arbol, tablaMatch);
 
                 if (resultado instanceof Errores) {
                     arbol.errores.add((Errores) resultado);
@@ -96,7 +100,9 @@ public class Match extends Instruccion {
 
                 var prueba = this.condicionE;
                 if (cond == resultado) {
-                    var sol = i.interpretar(arbol, newTabla);
+                    var tabla_match_int = new tablaSimbolos(tabla, tabla.getNombre() + "_MatchInst");
+                    tabla_res = tabla_match_int;
+                    var sol = i.interpretar(arbol, tabla_match_int);
                     if (sol instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
                     }
@@ -106,11 +112,13 @@ public class Match extends Instruccion {
             }
 
             if (!caso_existe) {
+                var tabla_match_int = new tablaSimbolos(tabla, tabla.getNombre() + "_MatchInst");
+                tabla_res = tabla_match_int;
                 for (var i : this.defaul) {
                     if (i instanceof Break) {
                         return i;
                     }
-                    var resultado = i.interpretar(arbol, newTabla);
+                    var resultado = i.interpretar(arbol, tabla_match_int);
 
                     if (resultado instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
@@ -123,6 +131,10 @@ public class Match extends Instruccion {
             }
 
         }
+
+        
+        arbol.addEntornos(tablaMatch);
+        arbol.addEntornos(tabla_res);
 
         return null;
     }

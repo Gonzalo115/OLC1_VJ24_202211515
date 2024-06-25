@@ -6,11 +6,7 @@ package instrucciones;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
-import simbolo.Arbol;
-import simbolo.simbolo;
-import simbolo.Tipo;
-import simbolo.tablaSimbolos;
-import simbolo.tipoDato;
+import simbolo.*;
 
 /**
  *
@@ -38,22 +34,20 @@ public class Declaracion extends Instruccion {
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
 
-        // interpretado la expresion
         simbolo s = null;
 
         if (this.valor != null) {
             var valorInterpretado = this.valor.interpretar(arbol, tabla);
-            //validamos si es error
             if (valorInterpretado instanceof Errores) {
                 return valorInterpretado;
             }
-            //validamos los tipo
             if (this.valor.tipo.getTipo() != this.tipo.getTipo()) {
-            return new Errores("SEMANTICO", "El tipo de variable "+this.tipo.getTipo()+" y el tipo de dato "+this.valor.tipo.getTipo()+" No coicide. ",
-            this.linea, this.col);
-                    }
+                return new Errores("SEMANTICO", "El tipo de variable " + this.tipo.getTipo() + " y el tipo de dato " + this.valor.tipo.getTipo() + " No coicide. ", this.linea, this.col);
+            }
+            //Tipo tipo, String tipoD, String id, boolean mutable, Object valor, int linea, int columna
 
-            s = new simbolo(this.tipo, this.identificador, this.mutable, valorInterpretado);
+            s = new simbolo(this.tipo, this.identificador, this.mutable, valorInterpretado, this.linea, this.col);
+
         } else {
             Object valorInterpretado;
             switch (this.tipo.getTipo()) {
@@ -64,7 +58,7 @@ public class Declaracion extends Instruccion {
                     valorInterpretado = 0.0;
                     break;
                 case tipoDato.BOOLEANO:
-                    valorInterpretado = true; 
+                    valorInterpretado = true;
                     break;
                 case tipoDato.CARACTER:
                     valorInterpretado = '\u0000';
@@ -75,7 +69,9 @@ public class Declaracion extends Instruccion {
                 default:
                     return new Errores("SEMANTICO", "El tipo definido por la funcion no existe", this.linea, this.col);
             }
-            s = new simbolo(this.tipo, this.identificador, this.mutable, valorInterpretado);
+
+            s = new simbolo(this.tipo, this.identificador, this.mutable, valorInterpretado, this.linea, this.col);
+
         }
 
         boolean creacion = tabla.setVariable(s);

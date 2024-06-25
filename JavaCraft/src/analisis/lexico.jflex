@@ -41,7 +41,6 @@ String cadena = "";
 BLANCOS=[\ \r\t\f\n]+
 ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
-//CADENA = [\"]((\\n)|(\\\")|(\\\\)|(\\t)|(\\\')|([^\"]))*[\"]
 BOOLEANO = ((true)|(false)) 
 CARACTER= ('[^\ \r\t\f\n]')
 ID=[a-zA-z][a-zA-Z0-9_]*
@@ -89,6 +88,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 //Simbolos del sistema
 <YYINITIAL> ";"     {return new Symbol(sym.FINCADENA, yyline, yycolumn,yytext());}
 <YYINITIAL> ":"     {return new Symbol(sym.DOSPUNTOS, yyline, yycolumn,yytext());}
+<YYINITIAL> ","     {return new Symbol(sym.COMA, yyline, yycolumn,yytext());}
 <YYINITIAL> "("     {return new Symbol(sym.PAR1, yyline, yycolumn,yytext());}
 <YYINITIAL> ")"     {return new Symbol(sym.PAR2, yyline, yycolumn,yytext());}
 <YYINITIAL> "++"    {return new Symbol(sym.MAS_MAS, yyline, yycolumn,yytext());}
@@ -112,6 +112,8 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "^"     {return new Symbol(sym.XOR, yyline, yycolumn,yytext());}
 <YYINITIAL> "{"     {return new Symbol(sym.LLAVE1, yyline, yycolumn,yytext());}
 <YYINITIAL> "}"     {return new Symbol(sym.LLAVE2, yyline, yycolumn,yytext());}
+<YYINITIAL> "["     {return new Symbol(sym.CORCHETE1, yyline, yycolumn,yytext());}
+<YYINITIAL> "]"     {return new Symbol(sym.CORCHETE2, yyline, yycolumn,yytext());}
 <YYINITIAL> "_"     {return new Symbol(sym.GUIONBAJO, yyline, yycolumn,yytext());}
 
 

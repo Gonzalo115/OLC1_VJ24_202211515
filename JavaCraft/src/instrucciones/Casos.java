@@ -28,12 +28,12 @@ public class Casos extends Instruccion {
 
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
-            var newTabla = new tablaSimbolos(tabla);
+
             for (var i : this.ejecucion) {
                 if (i instanceof Break) {
                     return i;
                 }
-                var resultado = i.interpretar(arbol, newTabla);
+                var resultado = i.interpretar(arbol, tabla);
 
                 if (resultado instanceof Errores) {
                     arbol.errores.add((Errores) resultado);

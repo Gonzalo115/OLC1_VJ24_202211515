@@ -11,7 +11,9 @@ import excepciones.Errores;
 //instrucciones
 import instrucciones.Print;
 import instrucciones.Declaracion;
+import instrucciones.DeclaracionVector;
 import instrucciones.AsignacionVC;
+import instrucciones.AsignacionVector;
 import instrucciones.Incremento;
 import instrucciones.Decremento;
 import instrucciones.If;
@@ -24,6 +26,7 @@ import instrucciones.Continue;
 import instrucciones.Match;
 import instrucciones.Casos;
 
+
 //expresiones
 import expresiones.Nativo;
 import expresiones.Aritmeticas;
@@ -35,6 +38,7 @@ import expresiones.OperadoresLogicos;
 import expresiones.AccesoVC;
 import expresiones.Casteos;
 import expresiones.Condicion;
+import expresiones.AccesoVector;
 
 // parser
 parser code
@@ -71,7 +75,7 @@ terminal IMPRIMIR, INT, DOUBLE, BOOL, CHAR, STRINGG, VAR, CONST;
 
 terminal IF, ELSE, FOR, WHILE, DO, MATCH; 
 
-terminal FINCADENA, DOSPUNTOS, PAR1, PAR2, IGUAL, LLAVE1, LLAVE2, GUIONBAJO;
+terminal FINCADENA, DOSPUNTOS, COMA, PAR1, PAR2, IGUAL, LLAVE1, LLAVE2, CORCHETE1, CORCHETE2, GUIONBAJO;
 
 terminal MAS,  MENOS, UMENOS, DIVISION, PORCENTUAL, DOBLE_ASTERISCO, ASTERISCO;
 
@@ -84,17 +88,18 @@ terminal NOT, OR, AND, XOR;
 terminal primero, segundo, tercero, cuarto;
 
 //no terminales
-nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES;
+nonterminal LinkedList<Instruccion> INICIO, INSTRUCCIONES, LISTA_1, AGRUPAR_VALORES;
+nonterminal LinkedList<LinkedList<Instruccion>> LISTA_2; 
 nonterminal Instruccion INSTRUCCION;
 nonterminal LinkedList<Casos> CASOS_S_S; 
 nonterminal Casos CASOS_S;
 nonterminal LinkedList<Else_> ELSE_IF_LIST;
-nonterminal Else_ ELSE_IF_CLAUSE; //Else_ OPTIONAL_ELSE_IF_LIST, 
-//nonterminal Instruccion OPTIONAL_ELSE;
-nonterminal Instruccion IMPRESION, DECLARACION, ASIGNACION, INCREMENTO, DECREMENTO, SIF, CFOR, CWHILE, CDO_WHILE, SMATCH, ACTUALIZA_FOR;
+nonterminal Else_ ELSE_IF_CLAUSE;
+nonterminal Instruccion IMPRESION, DECLARACION, DECLARACIONVECTOR, ASIGNACION, ASIGNACIONVECTOR, INCREMENTO, DECREMENTO, SIF, CFOR, CWHILE, CDO_WHILE, SMATCH, ACTUALIZA_FOR;
 nonterminal Instruccion BREAKK, CONTINUEE;
 nonterminal Tipo TIPOS;
 nonterminal Instruccion EXPRESION;
+//nonterminal MUTABILIDAD;
 
 precedence nonassoc cuarto;
 precedence nonassoc tercero;
@@ -121,20 +126,22 @@ INICIO ::= INSTRUCCIONES:a      {:   RESULT = a;   :}
 INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b); :}
                 | INSTRUCCION:a                     {: RESULT = new LinkedList<>(); RESULT.add(a); :}
 ;
+              
 
-
-INSTRUCCION ::= IMPRESION:a         {:   RESULT=a;   :}
-                | ASIGNACION:a      {:   RESULT=a;   :}
-                | DECLARACION:a     {:   RESULT=a;   :}
-                | INCREMENTO:a      {:   RESULT=a;   :}
-                | DECREMENTO:a      {:   RESULT=a;   :}
-                | SIF:a             {:   RESULT=a;   :}
-                | SMATCH:a          {:   RESULT=a;   :}
-                | CFOR:a            {:   RESULT=a;   :}
-                | CWHILE:a          {:   RESULT=a;   :}
-                | CDO_WHILE:a       {:   RESULT=a;   :}
-                | BREAKK:a          {:   RESULT=a;   :}
-                | CONTINUEE:a       {:   RESULT=a;   :}
+INSTRUCCION ::= IMPRESION:a             {:   RESULT=a;   :}
+                | DECLARACION:a         {:   RESULT=a;   :}
+                | DECLARACIONVECTOR:a   {:   RESULT=a;   :}
+                | ASIGNACION:a          {:   RESULT=a;   :} 
+                | ASIGNACIONVECTOR:a    {:   RESULT=a;   :}              
+                | INCREMENTO:a          {:   RESULT=a;   :}
+                | DECREMENTO:a          {:   RESULT=a;   :}
+                | SIF:a                 {:   RESULT=a;   :}
+                | SMATCH:a              {:   RESULT=a;   :}
+                | CFOR:a                {:   RESULT=a;   :}
+                | CWHILE:a              {:   RESULT=a;   :}
+                | CDO_WHILE:a           {:   RESULT=a;   :}
+                | BREAKK:a              {:   RESULT=a;   :}
+                | CONTINUEE:a           {:   RESULT=a;   :}
                 | error FINCADENA
                 | error LLAVE2
 ;
@@ -143,14 +150,36 @@ INSTRUCCION ::= IMPRESION:a         {:   RESULT=a;   :}
 IMPRESION ::= IMPRIMIR PAR1 EXPRESION:a PAR2 FINCADENA      {:   RESULT = new Print(a, aleft, aright);   :}
 ;
 
+DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                        {:   RESULT = new Declaracion(true, a, b, aleft, aright);       :}
+                |VAR ID:a DOSPUNTOS TIPOS:b IGUAL EXPRESION:c FINCADENA     {:   RESULT = new Declaracion(true, a, b, c , aleft, aright);   :}
+                |CONST ID:a DOSPUNTOS TIPOS:b FINCADENA                     {:   RESULT = new Declaracion(false, a, b, aleft, aright);      :}
+                |CONST ID:a DOSPUNTOS TIPOS:b IGUAL EXPRESION:c FINCADENA   {:   RESULT = new Declaracion(false, a, b, c , aleft, aright);  :}
+;
+
 ASIGNACION ::= ID:a IGUAL EXPRESION:b FINCADENA  {:   RESULT=new AsignacionVC(a, b, aleft, aright);  :}
 ;
 
 
-DECLARACION ::= VAR ID:a DOSPUNTOS TIPOS:b FINCADENA                {:   RESULT = new Declaracion(true, a, b, aleft, aright);       :}
-                |VAR ID:a DOSPUNTOS TIPOS:b IGUAL EXPRESION:c FINCADENA   {:   RESULT = new Declaracion(true, a, b, c , aleft, aright);   :}
-                |CONST ID:a DOSPUNTOS TIPOS:b FINCADENA             {:   RESULT = new Declaracion(false, a, b, aleft, aright);      :}
-                |CONST ID:a DOSPUNTOS TIPOS:b IGUAL EXPRESION:c FINCADENA {:   RESULT = new Declaracion(false, a, b, c , aleft, aright);  :}
+DECLARACIONVECTOR ::=   VAR ID:a DOSPUNTOS TIPOS:d CORCHETE1 CORCHETE2 IGUAL AGRUPAR_VALORES:b FINCADENA                                    {:   RESULT = new DeclaracionVector(a, b, true, d, aleft, aright);    :}
+                        |CONST ID:a DOSPUNTOS TIPOS:d CORCHETE1 CORCHETE2 IGUAL AGRUPAR_VALORES:b  FINCADENA                                {:   RESULT = new DeclaracionVector(a, b, false, d, aleft, aright);    :}
+                        |VAR ID:a DOSPUNTOS TIPOS:d CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL CORCHETE1 LISTA_2:b CORCHETE2 FINCADENA   {:   RESULT = new DeclaracionVector(true, a, b, d, aleft, aright);    :}
+                        |CONST ID:a DOSPUNTOS TIPOS:d CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL CORCHETE1 LISTA_2:b CORCHETE2 FINCADENA {:   RESULT = new DeclaracionVector(false, a, b, d, aleft, aright);    :}
+
+;
+
+LISTA_1 ::= LISTA_1:a COMA EXPRESION:b      {: RESULT = a; RESULT.add(b); :}
+            |EXPRESION:a                    {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+;
+
+LISTA_2 ::= LISTA_2:a COMA AGRUPAR_VALORES:b      {: RESULT = a; RESULT.add(b); :}
+            |AGRUPAR_VALORES:a                    {: RESULT = new LinkedList<>(); RESULT.add(a); :}
+;
+
+AGRUPAR_VALORES ::= CORCHETE1 LISTA_1:a CORCHETE2   {:   RESULT=a;   :}
+;
+
+ASIGNACIONVECTOR ::= ID:a CORCHETE1 EXPRESION:b CORCHETE2 IGUAL EXPRESION:c FINCADENA                                   {:   RESULT=new AsignacionVector(a, b, c, aleft, aright);  :}
+                    |ID:a CORCHETE1 EXPRESION:b CORCHETE2 CORCHETE1 EXPRESION:c CORCHETE2 IGUAL EXPRESION:d FINCADENA   {:   RESULT=new AsignacionVector(a, b, c, d, aleft, aright);  :}
 ;
 
 INCREMENTO ::= ID:a MAS_MAS FINCADENA                               {:   RESULT = new Incremento(a, aleft, aright);  :}
@@ -204,6 +233,10 @@ BREAKK ::= BREAK:a FINCADENA      {:    RESULT = new Break(aleft, aright);     :
 CONTINUEE ::= CONTINUE:a FINCADENA      {:    RESULT = new Continue(aleft, aright);     :}
 ;
 
+// MUTABILIDAD ::=  VAR        {:   RESULT = true;   :} 
+//                 |CONST      {:   RESULT = false;   :} 
+// ;
+
 TIPOS ::=    INT        {:   RESULT=new Tipo(tipoDato.ENTERO);   :}                                       
             |DOUBLE     {:   RESULT=new Tipo(tipoDato.DECIMAL);   :}  
             |BOOL       {:   RESULT=new Tipo(tipoDato.BOOLEANO);   :}  
@@ -240,5 +273,10 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | BOOLEANO:a                                {: RESULT = new Nativo(Boolean.valueOf(((String) a).toLowerCase()), new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
 
             | ID:a                                      {: RESULT = new AccesoVC(a, aleft, aright);   :}
+
+            | ID:a CORCHETE1 EXPRESION:b CORCHETE2      {: RESULT = new AccesoVector(a, b, aleft, aright);   :}
+            | ID:a CORCHETE1 EXPRESION:b CORCHETE2 
+                   CORCHETE1 EXPRESION:c CORCHETE2      {: RESULT = new AccesoVector(a, b, c, aleft, aright);   :}
+
             | PAR1 EXPRESION:a PAR2                     {: RESULT = a;    :}
 ;
