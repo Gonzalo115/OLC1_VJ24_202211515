@@ -42,6 +42,10 @@ import expresiones.Casteos;
 import expresiones.Condicion;
 import expresiones.AccesoVector;
 import expresiones.RemoveLista;
+import expresiones.Round;
+import expresiones.Length;
+import expresiones.ToString;
+import expresiones.Find;
 
 // parser
 parser code
@@ -76,7 +80,7 @@ terminal String CADENA, CARACTER, ENTERO, DECIMAL, BOOLEANO, ID, BREAK, CONTINUE
 
 terminal IMPRIMIR, INT, DOUBLE, BOOL, CHAR, STRINGG, LIST, VAR, CONST, NEW;
 
-terminal APPEND, REMOVE;
+terminal APPEND, REMOVE, ROUND, LENGTH, TOSTRING, FIND;
 
 terminal IF, ELSE, FOR, WHILE, DO, MATCH; 
 
@@ -306,6 +310,10 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
 
             | PAR1 EXPRESION:a PAR2                     {: RESULT = a;    :}
 
-            | ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2         {: RESULT = new RemoveLista(a, b, aleft, aright);   :}        
+            | ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2   {: RESULT = new RemoveLista(a, b, aleft, aright);   :}    
 
+            | ROUND PAR1 EXPRESION:a PAR2               {: RESULT = new Round(a, aleft, aright);   :}   
+            | LENGTH PAR1 EXPRESION:a PAR2              {: RESULT = new Length(a, aleft, aright);   :}
+            | TOSTRING PAR1 EXPRESION:a PAR2            {: RESULT = new ToString(a, aleft, aright);   :}
+            | ID:a PUNTO FIND PAR1 EXPRESION:b PAR2     {: RESULT = new Find(a, b, aleft, aright);   :}
 ;

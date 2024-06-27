@@ -80,6 +80,11 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "new"       {return new Symbol(sym.NEW, yyline, yycolumn,yytext());}
 <YYINITIAL> "append"    {return new Symbol(sym.APPEND, yyline, yycolumn,yytext());}
 <YYINITIAL> "remove"    {return new Symbol(sym.REMOVE, yyline, yycolumn,yytext());}
+<YYINITIAL> "round"    {return new Symbol(sym.ROUND, yyline, yycolumn,yytext());}
+<YYINITIAL> "Length"    {return new Symbol(sym.LENGTH, yyline, yycolumn,yytext());}
+<YYINITIAL> "ToString"    {return new Symbol(sym.TOSTRING, yyline, yycolumn,yytext());}
+<YYINITIAL> "Find"    {return new Symbol(sym.FIND, yyline, yycolumn,yytext());}
+
 
 
 
