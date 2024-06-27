@@ -42,7 +42,7 @@ public class DeclaracionVector extends Instruccion {
 
         simbolo s = null;
 
-        if (this.vector1 != null) {
+        if (this.vector2 == null) {
 
             LinkedList<Object> vectorUni = new LinkedList<>();
 

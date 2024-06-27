@@ -42,8 +42,30 @@ public class AccesoVector extends Instruccion {
             return new Errores("SEMANTICA", "Variable no existente", this.linea, this.col);
         }
 
-        if (valor.getTipo().getTipo() == tipoDato.VECTOR_1) {
+        if (valor.getTipo().getTipo() == tipoDato.LISTA) {
+            if (this.pos2 == null) {
+                var pos_a = this.pos1.interpretar(arbol, tabla);
 
+                if (pos_a instanceof Errores) {
+                    return pos_a;
+                }
+
+                if (this.pos1.tipo.getTipo() != tipoDato.ENTERO) {
+                    return new Errores("SEMANTICA", "El tipo de Dato de la ubicacion debe de ser tipo ENTERO", this.linea, this.col);
+                }
+
+                LinkedList<Object> vector = (LinkedList<Object>) valor.getValor();
+
+                if ((int) pos_a >= 0 && (int) pos_a < vector.size()) {
+                    valor_a_retornar = vector.get((int) pos_a);
+                } else {
+                    return new Errores("SEMANTICA", "La posicion en la lista  " + this.id + " no existe.", this.linea, this.col);
+                }
+            } else {
+                return new Errores("SEMANTICA", "Estas dando una segunda ubicacion a el lista " + valor.getId() + " de una dimension.", this.linea, this.col);
+            }
+
+        } else if (valor.getTipo().getTipo() == tipoDato.VECTOR_1) {
             if (this.pos2 == null) {
                 var pos_a = this.pos1.interpretar(arbol, tabla);
 
@@ -65,7 +87,6 @@ public class AccesoVector extends Instruccion {
             } else {
                 return new Errores("SEMANTICA", "Estas dando una segunda ubicacion a el vector " + valor.getId() + " de una dimension.", this.linea, this.col);
             }
-
         } else if (valor.getTipo().getTipo() == tipoDato.VECTOR_2) {
 
             if (this.pos2 != null) {
@@ -107,7 +128,7 @@ public class AccesoVector extends Instruccion {
                 return new Errores("SEMANTICA", "Estas dando ubicaciones menos para el vector " + valor.getId() + " de dos dimensiones.", this.linea, this.col);
             }
         } else {
-            return new Errores("SEMANTICA", "Variable que intentas accede como un vector no es un vector su tipo de dato es " + valor.getTipo().getTipo(), this.linea, this.col);
+            return new Errores("SEMANTICA", "Variable que intentas accede como un vector no es un lista/vector su tipo de dato es " + valor.getTipo().getTipo(), this.linea, this.col);
 
         }
 

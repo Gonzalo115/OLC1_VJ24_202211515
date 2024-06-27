@@ -16,5 +16,6 @@ public enum tipoDato {
     CADENA,
     VECTOR_1,
     VECTOR_2,
+    LISTA,
     VOID
 }

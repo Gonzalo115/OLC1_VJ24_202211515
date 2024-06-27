@@ -12,6 +12,7 @@ import excepciones.Errores;
 import instrucciones.Print;
 import instrucciones.Declaracion;
 import instrucciones.DeclaracionVector;
+import instrucciones.DeclaracionLista;
 import instrucciones.AsignacionVC;
 import instrucciones.AsignacionVector;
 import instrucciones.Incremento;
@@ -25,6 +26,7 @@ import instrucciones.Break;
 import instrucciones.Continue;
 import instrucciones.Match;
 import instrucciones.Casos;
+import instrucciones.AppendLista;
 
 
 //expresiones
@@ -39,6 +41,7 @@ import expresiones.AccesoVC;
 import expresiones.Casteos;
 import expresiones.Condicion;
 import expresiones.AccesoVector;
+import expresiones.RemoveLista;
 
 // parser
 parser code
@@ -71,11 +74,13 @@ action code
 //terminales
 terminal String CADENA, CARACTER, ENTERO, DECIMAL, BOOLEANO, ID, BREAK, CONTINUE;
 
-terminal IMPRIMIR, INT, DOUBLE, BOOL, CHAR, STRINGG, VAR, CONST;
+terminal IMPRIMIR, INT, DOUBLE, BOOL, CHAR, STRINGG, LIST, VAR, CONST, NEW;
+
+terminal APPEND, REMOVE;
 
 terminal IF, ELSE, FOR, WHILE, DO, MATCH; 
 
-terminal FINCADENA, DOSPUNTOS, COMA, PAR1, PAR2, IGUAL, LLAVE1, LLAVE2, CORCHETE1, CORCHETE2, GUIONBAJO;
+terminal FINCADENA, DOSPUNTOS, PUNTO, COMA, PAR1, PAR2, IGUAL, LLAVE1, LLAVE2, CORCHETE1, CORCHETE2, GUIONBAJO;
 
 terminal MAS,  MENOS, UMENOS, DIVISION, PORCENTUAL, DOBLE_ASTERISCO, ASTERISCO;
 
@@ -95,10 +100,11 @@ nonterminal LinkedList<Casos> CASOS_S_S;
 nonterminal Casos CASOS_S;
 nonterminal LinkedList<Else_> ELSE_IF_LIST;
 nonterminal Else_ ELSE_IF_CLAUSE;
-nonterminal Instruccion IMPRESION, DECLARACION, DECLARACIONVECTOR, ASIGNACION, ASIGNACIONVECTOR, INCREMENTO, DECREMENTO, SIF, CFOR, CWHILE, CDO_WHILE, SMATCH, ACTUALIZA_FOR;
+nonterminal Instruccion IMPRESION, INCREMENTO, DECREMENTO, SIF, CFOR, CWHILE, CDO_WHILE, SMATCH, ACTUALIZA_FOR;
+nonterminal Instruccion DECLARACION, DECLARACIONVECTOR, DECLARACIONLISTA, ASIGNACION, ASIGNACIONVECTOR;
 nonterminal Instruccion BREAKK, CONTINUEE;
-nonterminal Tipo TIPOS;
-nonterminal Instruccion EXPRESION;
+nonterminal Tipo TIPOS, TIPOS_LISTAS;
+nonterminal Instruccion EXPRESION, APPENDD, REMOVEE;
 //nonterminal MUTABILIDAD;
 
 precedence nonassoc cuarto;
@@ -131,6 +137,7 @@ INSTRUCCIONES ::= INSTRUCCIONES:a INSTRUCCION:b     {: RESULT = a; RESULT.add(b)
 INSTRUCCION ::= IMPRESION:a             {:   RESULT=a;   :}
                 | DECLARACION:a         {:   RESULT=a;   :}
                 | DECLARACIONVECTOR:a   {:   RESULT=a;   :}
+                | DECLARACIONLISTA:a    {:   RESULT=a;   :}
                 | ASIGNACION:a          {:   RESULT=a;   :} 
                 | ASIGNACIONVECTOR:a    {:   RESULT=a;   :}              
                 | INCREMENTO:a          {:   RESULT=a;   :}
@@ -142,6 +149,8 @@ INSTRUCCION ::= IMPRESION:a             {:   RESULT=a;   :}
                 | CDO_WHILE:a           {:   RESULT=a;   :}
                 | BREAKK:a              {:   RESULT=a;   :}
                 | CONTINUEE:a           {:   RESULT=a;   :}
+                | APPENDD:a             {:   RESULT=a;   :}
+                | REMOVEE:a             {:   RESULT=a;   :}
                 | error FINCADENA
                 | error LLAVE2
 ;
@@ -180,6 +189,15 @@ AGRUPAR_VALORES ::= CORCHETE1 LISTA_1:a CORCHETE2   {:   RESULT=a;   :}
 
 ASIGNACIONVECTOR ::= ID:a CORCHETE1 EXPRESION:b CORCHETE2 IGUAL EXPRESION:c FINCADENA                                   {:   RESULT=new AsignacionVector(a, b, c, aleft, aright);  :}
                     |ID:a CORCHETE1 EXPRESION:b CORCHETE2 CORCHETE1 EXPRESION:c CORCHETE2 IGUAL EXPRESION:d FINCADENA   {:   RESULT=new AsignacionVector(a, b, c, d, aleft, aright);  :}
+;
+
+DECLARACIONLISTA ::= LIST MENOR TIPOS_LISTAS:a MAYOR ID:b IGUAL NEW LIST PAR1 PAR2 FINCADENA    {:   RESULT=new DeclaracionLista(b, a, aleft, aright);  :}
+;
+
+APPENDD ::= ID:a PUNTO APPEND PAR1 EXPRESION:b PAR2 FINCADENA       {:   RESULT=new AppendLista(a, b, aleft, aright);  :}
+;
+
+REMOVEE ::= ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2 FINCADENA        {: RESULT = new RemoveLista(a, b, aleft, aright);   :} 
 ;
 
 INCREMENTO ::= ID:a MAS_MAS FINCADENA                               {:   RESULT = new Incremento(a, aleft, aright);  :}
@@ -237,11 +255,19 @@ CONTINUEE ::= CONTINUE:a FINCADENA      {:    RESULT = new Continue(aleft, arigh
 //                 |CONST      {:   RESULT = false;   :} 
 // ;
 
-TIPOS ::=    INT        {:   RESULT=new Tipo(tipoDato.ENTERO);   :}                                       
-            |DOUBLE     {:   RESULT=new Tipo(tipoDato.DECIMAL);   :}  
-            |BOOL       {:   RESULT=new Tipo(tipoDato.BOOLEANO);   :}  
-            |CHAR       {:   RESULT=new Tipo(tipoDato.CARACTER);   :}  
-            |STRINGG    {:   RESULT=new Tipo(tipoDato.CADENA);   :}  
+TIPOS ::=   INT        {:   RESULT=new Tipo(tipoDato.ENTERO);       :}                                       
+            |DOUBLE     {:   RESULT=new Tipo(tipoDato.DECIMAL);     :}  
+            |BOOL       {:   RESULT=new Tipo(tipoDato.BOOLEANO);    :}  
+            |CHAR       {:   RESULT=new Tipo(tipoDato.CARACTER);    :}  
+            |STRINGG    {:   RESULT=new Tipo(tipoDato.CADENA);      :}  
+;
+
+TIPOS_LISTAS ::=    INT        {:   RESULT=new Tipo(tipoDato.ENTERO);   :}                                       
+                    |DOUBLE    {:   RESULT=new Tipo(tipoDato.DECIMAL);  :}  
+                    |BOOL      {:   RESULT=new Tipo(tipoDato.BOOLEANO); :}  
+                    |CHAR      {:   RESULT=new Tipo(tipoDato.CARACTER); :}  
+                    |STRINGG   {:   RESULT=new Tipo(tipoDato.CADENA);   :}
+                    |LIST      {:   RESULT=new Tipo(tipoDato.LISTA);    :} 
 ;
 
 EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeticas(a, OperadoresAritmeticos.NEGACION, aleft, aright); :} %prec UMENOS
@@ -279,4 +305,7 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
                    CORCHETE1 EXPRESION:c CORCHETE2      {: RESULT = new AccesoVector(a, b, c, aleft, aright);   :}
 
             | PAR1 EXPRESION:a PAR2                     {: RESULT = a;    :}
+
+            | ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2         {: RESULT = new RemoveLista(a, b, aleft, aright);   :}        
+
 ;

@@ -33,7 +33,7 @@ public class For extends Instruccion {
         //creamos un nuevo entorno
         var tabla_For = new tablaSimbolos(tabla, tabla.getNombre() + "_For");
         tablaSimbolos tabla_res = null;
-        
+
         // asignacion/declaracion
         var res1 = this.asignacion.interpretar(arbol, tabla_For);
         if (res1 instanceof Errores) {
@@ -57,6 +57,7 @@ public class For extends Instruccion {
 
             //ejecutar instrucciones
             for (var i : this.instrucciones) {
+
                 if (i instanceof Break) {
                     return null;
                 }
@@ -65,6 +66,11 @@ public class For extends Instruccion {
                     //return null;
                 }
                 var resIns = i.interpretar(arbol, tabla_for_ins);
+
+                if (resIns instanceof Errores) {
+                    arbol.errores.add((Errores) resIns);
+                }
+
                 if (resIns instanceof Break) {
                     return null;
                 }
@@ -82,8 +88,7 @@ public class For extends Instruccion {
                 tabla_res = tabla_for_ins;
             }
         }
-        
-        
+
         //arbol.addEntornos(tabla_For);
         arbol.addEntornos(tabla_res);
         return null;

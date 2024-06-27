@@ -41,7 +41,7 @@ public class While extends Instruccion {
         }
 
         while ((boolean) this.condicion.interpretar(arbol, tabla_While)) {
-
+            //arbol.getInstrucciones()[arbol.getInstrucciones().size - 1]
             var tabla_While_ins = new tablaSimbolos(tabla_While, tabla_While.getNombre() + "_WhileInst");
 
             for (var i : this.instrucciones) {
@@ -52,7 +52,25 @@ public class While extends Instruccion {
                     break;
                     //return null;
                 }
+                /*
+                if (i instanceof While && !(boolean) this.condicion.interpretar(arbol, tabla_While)) {
+                    var resIns = i.interpretar(arbol, tabla_While_ins);
+                    tabla_res = tabla_While_ins;
+                    if (resIns instanceof Break) {
+                        return null;
+                    }
+                    if (resIns instanceof Continue) {
+                        break;
+                        //return null;
+                    }
+                }*/
+
                 var resIns = i.interpretar(arbol, tabla_While_ins);
+
+                if (resIns instanceof Errores) {
+                    arbol.errores.add((Errores) resIns);
+                }
+
                 if (resIns instanceof Break) {
                     return null;
                 }
@@ -62,8 +80,10 @@ public class While extends Instruccion {
                 }
             }
 
-            if (!(boolean) this.condicion.interpretar(arbol, tabla_While_ins)) {
+            if (!(boolean) this.condicion.interpretar(arbol, tabla_While)) {
                 tabla_res = tabla_While_ins;
+                System.out.println((boolean) this.condicion.interpretar(arbol, tabla_While));
+                System.out.println("hola");
             }
         }
 

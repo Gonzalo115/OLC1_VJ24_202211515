@@ -403,6 +403,10 @@ public class Principal extends javax.swing.JFrame {
         html += "<tbody>";
         // Se agregan las filas de la tabla
         for (var i : tablaSimbolos) {
+            if( i == null){
+                continue;
+            }
+            
             html += i.tablaHtml();
         }
         html += "</tbody>";
@@ -529,7 +533,7 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
             
-            
+            erroresSemanticos.addAll(ast.getErrores());
             
             Consola1.setText(ast.getConsola());
 

@@ -66,16 +66,20 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "bool"      {return new Symbol(sym.BOOL, yyline, yycolumn,yytext());}
 <YYINITIAL> "char"      {return new Symbol(sym.CHAR, yyline, yycolumn,yytext());}
 <YYINITIAL> "String"    {return new Symbol(sym.STRINGG, yyline, yycolumn,yytext());}
+<YYINITIAL> "List"      {return new Symbol(sym.LIST, yyline, yycolumn,yytext());}
 <YYINITIAL> "var"       {return new Symbol(sym.VAR, yyline, yycolumn,yytext());}
 <YYINITIAL> "const"     {return new Symbol(sym.CONST, yyline, yycolumn,yytext());}
-<YYINITIAL> "else"      {return new Symbol(sym.ELSE, yyline, yycolumn,yytext());}
 <YYINITIAL> "if"        {return new Symbol(sym.IF, yyline, yycolumn,yytext());}
+<YYINITIAL> "else"      {return new Symbol(sym.ELSE, yyline, yycolumn,yytext());}
+<YYINITIAL> "match"     {return new Symbol(sym.MATCH, yyline, yycolumn,yytext());} 
 <YYINITIAL> "for"       {return new Symbol(sym.FOR, yyline, yycolumn,yytext());}
 <YYINITIAL> "while"     {return new Symbol(sym.WHILE, yyline, yycolumn,yytext());}
 <YYINITIAL> "do"        {return new Symbol(sym.DO, yyline, yycolumn,yytext());}
 <YYINITIAL> "break"     {return new Symbol(sym.BREAK, yyline, yycolumn,yytext());}
-<YYINITIAL> "match"     {return new Symbol(sym.MATCH, yyline, yycolumn,yytext());} 
-<YYINITIAL> "continue"     {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
+<YYINITIAL> "continue"  {return new Symbol(sym.CONTINUE, yyline, yycolumn,yytext());}
+<YYINITIAL> "new"       {return new Symbol(sym.NEW, yyline, yycolumn,yytext());}
+<YYINITIAL> "append"    {return new Symbol(sym.APPEND, yyline, yycolumn,yytext());}
+<YYINITIAL> "remove"    {return new Symbol(sym.REMOVE, yyline, yycolumn,yytext());}
 
 
 
@@ -115,6 +119,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "["     {return new Symbol(sym.CORCHETE1, yyline, yycolumn,yytext());}
 <YYINITIAL> "]"     {return new Symbol(sym.CORCHETE2, yyline, yycolumn,yytext());}
 <YYINITIAL> "_"     {return new Symbol(sym.GUIONBAJO, yyline, yycolumn,yytext());}
+<YYINITIAL> "."     {return new Symbol(sym.PUNTO, yyline, yycolumn,yytext());}
 
 
 <YYINITIAL> {ID} {return new Symbol(sym.ID, yyline, yycolumn,yytext());}

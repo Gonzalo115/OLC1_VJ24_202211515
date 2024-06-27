@@ -74,6 +74,10 @@ public class tablaSimbolos {
 
         String html = "";
 
+        if(this.tablaActual == null){
+            return "";
+        }
+        
         for (String key : this.tablaActual.keySet()) {
             simbolo value = (simbolo) this.tablaActual.get(key);
             System.out.println("Key: " + key + ", Value: " + value);

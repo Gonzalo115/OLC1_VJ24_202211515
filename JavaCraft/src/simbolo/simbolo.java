@@ -12,11 +12,11 @@ import java.util.LinkedList;
  */
 public class simbolo {
 
-    private Tipo tipo;              //Tipo de Dato -> Entero, Decimal, Boleano, String, Character, Vector, Matrix
-    public Tipo tipoD;              //En caso que es un vector indicar que tipo de datos tiene.
+    private Tipo tipo;              //Tipo de Dato -> Entero, Decimal, Boleano, String, Character, Vector, Lista o struc.
+    public Tipo tipoD;              //En caso que es un vector o lista indicar que tipo de datos tiene.
     public boolean mutable;         //Mutabilidad
     private String id;              //Identificador
-    private Object valor;           //Valor para las varibales
+    private Object valor;           //Valor
     private int linea;              //Linea
     private int columna;            //Columna
 

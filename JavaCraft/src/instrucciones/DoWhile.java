@@ -55,6 +55,11 @@ public class DoWhile extends Instruccion {
                     //return null;
                 }
                 var resIns = i.interpretar(arbol, tabla_DoWhile_ins);
+
+                if (resIns instanceof Errores) {
+                    arbol.errores.add((Errores) resIns);
+                }
+
                 if (resIns instanceof Break) {
                     return null;
                 }
