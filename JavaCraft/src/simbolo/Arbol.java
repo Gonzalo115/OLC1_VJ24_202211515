@@ -6,6 +6,7 @@ package simbolo;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
+import instrucciones.Metodo;
 import java.util.LinkedList;
 
 /**
@@ -19,12 +20,14 @@ public class Arbol {
     public tablaSimbolos tablaGlobal;
     public LinkedList<Errores> errores;
     public LinkedList<tablaSimbolos> entornos = new LinkedList<>();
+    public LinkedList<Instruccion> funciones;
 
     public Arbol(LinkedList<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
         this.consola = "";
         this.tablaGlobal = new tablaSimbolos();
         this.errores = new LinkedList<>();
+        this.funciones = new LinkedList<>();
     }
 
     public LinkedList<Instruccion> getInstrucciones() {
@@ -69,6 +72,29 @@ public class Arbol {
 
     public void addEntornos(tablaSimbolos tablaEntorno) {
         this.entornos.add(tablaEntorno);
+    }
+
+    public LinkedList<Instruccion> getFunciones() {
+        return funciones;
+    }
+
+    public void setFunciones(LinkedList<Instruccion> funciones) {
+        this.funciones = funciones;
+    }
+
+    public void addFunciones(Instruccion funcion) {
+        this.funciones.add(funcion);
+    }
+
+    public Instruccion getFuncion(String id) {
+        for (var i : this.funciones) {
+            if (i instanceof Metodo metodo) {
+                if (metodo.id.equalsIgnoreCase(id)) {
+                    return i;
+                }
+            }
+        }
+        return null;
     }
 
     public void Print(String valor) {

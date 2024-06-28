@@ -17,6 +17,8 @@ import Clases.Documento;
 import abstracto.Instruccion;
 import analisis.parser;
 import analisis.scanner;
+import instrucciones.*;
+import expresiones.*;
 import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -403,10 +405,10 @@ public class Principal extends javax.swing.JFrame {
         html += "<tbody>";
         // Se agregan las filas de la tabla
         for (var i : tablaSimbolos) {
-            if( i == null){
+            if (i == null) {
                 continue;
             }
-            
+
             html += i.tablaHtml();
         }
         html += "</tbody>";
@@ -503,6 +505,7 @@ public class Principal extends javax.swing.JFrame {
             var tabla = new tablaSimbolos();
             tabla.setNombre("GLOBAL");
             ast.setConsola("");
+            ast.setTablaGlobal(tabla);
 
             if (!erroresLexicos.isEmpty()) {
                 erroresLexicos.clear();
@@ -527,24 +530,52 @@ public class Principal extends javax.swing.JFrame {
                 if (a == null) {
                     continue;
                 }
-                var res = a.interpretar(ast, tabla);
-                if (res instanceof Errores) {
-                    erroresSemanticos.add((Errores) res);
+
+                if (a instanceof Metodo) { // Proximaente
+                    ast.addFunciones(a);
                 }
             }
-            
+
+            for (var a : ast.getInstrucciones()) {
+                if (a == null) {
+                    continue;
+                }
+                if (a instanceof Declaracion || a instanceof DeclaracionVector || a instanceof DeclaracionLista || a instanceof AsignacionVC || a instanceof AsignacionVector || a instanceof AppendLista) {
+                    var res = a.interpretar(ast, tabla);
+                    if (res instanceof Errores errores) {
+                        ast.errores.add(errores);
+                    }
+                }
+            }
+
+            Start e = null;
+            for (var a : ast.getInstrucciones()) {
+                if (a == null) {
+                    continue;
+                }
+                if (a instanceof Start execute) {
+                    e = execute;
+                    break;
+                }
+            }
+
+            var resultadoSTART = e.interpretar(ast, tabla);
+            if (resultadoSTART instanceof Errores) {
+                ast.errores.add((Errores) resultadoSTART);
+            }
+
             erroresSemanticos.addAll(ast.getErrores());
-            
+
             Consola1.setText(ast.getConsola());
 
             tablaSimbolos.addFirst(tabla);
             tablaSimbolos.addAll(ast.entornos);
 
             String consola = "";
-            
+
             consola += "----------------------ERRORES LEXICOS----------------------\n";
             for (var i : erroresLexicos) {
-                consola +=  i.toString();
+                consola += i.toString();
             }
 
             consola += "--------------------ERRORES SINTACTICOS---------------------\n";
@@ -556,7 +587,7 @@ public class Principal extends javax.swing.JFrame {
             for (var i : erroresSemanticos) {
                 consola += i.toString();
             }
-            
+
             Consola2.setText(consola);
 
         } catch (Exception ex) {

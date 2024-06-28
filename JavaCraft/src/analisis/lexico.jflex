@@ -61,6 +61,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 
 //Palabras Reservadas
 <YYINITIAL> "println"   {return new Symbol(sym.IMPRIMIR, yyline, yycolumn,yytext());}
+<YYINITIAL> "void"      {return new Symbol(sym.VOID, yyline, yycolumn,yytext());}
 <YYINITIAL> "int"       {return new Symbol(sym.INT, yyline, yycolumn,yytext());}
 <YYINITIAL> "double"    {return new Symbol(sym.DOUBLE, yyline, yycolumn,yytext());}
 <YYINITIAL> "bool"      {return new Symbol(sym.BOOL, yyline, yycolumn,yytext());}
@@ -84,6 +85,8 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "Length"    {return new Symbol(sym.LENGTH, yyline, yycolumn,yytext());}
 <YYINITIAL> "ToString"    {return new Symbol(sym.TOSTRING, yyline, yycolumn,yytext());}
 <YYINITIAL> "Find"    {return new Symbol(sym.FIND, yyline, yycolumn,yytext());}
+<YYINITIAL> "start_with"    {return new Symbol(sym.START_WITH, yyline, yycolumn,yytext());}
+
 
 
 
