@@ -531,7 +531,7 @@ public class Principal extends javax.swing.JFrame {
                     continue;
                 }
 
-                if (a instanceof Metodo) { // Proximaente
+                if (a instanceof Metodo || a instanceof Funcion) {
                     ast.addFunciones(a);
                 }
             }

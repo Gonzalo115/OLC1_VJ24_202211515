@@ -15,14 +15,14 @@ import simbolo.*;
  *
  * @author 5gonz
  */
-public class Metodo extends Instruccion {
+public class Funcion extends Instruccion {
 
     public String id;
     public LinkedList<HashMap> parametros;
     public LinkedList<Instruccion> instrucciones;
 
-    public Metodo(String id, LinkedList<Instruccion> instrucciones, LinkedList<HashMap> parametros, int linea, int col) {
-        super(new Tipo(tipoDato.VOID), linea, col);
+    public Funcion(String id, LinkedList<Instruccion> instrucciones, LinkedList<HashMap> parametros, Tipo tipo, int linea, int col) {
+        super(tipo, linea, col);
         this.id = id;
         this.instrucciones = instrucciones;
         this.parametros = parametros;
@@ -31,15 +31,28 @@ public class Metodo extends Instruccion {
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         for (var i : this.instrucciones) {
-            
+
             var resultado = i.interpretar(arbol, tabla);
+
             if (resultado instanceof Errores) {
                 arbol.errores.add((Errores) resultado);
-            }        
-                    
+            }
 
             if (resultado instanceof ReturnValue returnValor) {
-                return new Errores("SEMANTICO", "Un metodo no puede devolver un valor.", this.linea, this.col);
+                if(returnValor.expresiones == null){
+                    return resultado;
+                }
+                
+                if (this.tipo.getTipo() == returnValor.tipo.getTipo()) {
+                    return resultado;
+                } else {
+                    return new Errores("SEMANTICO", "El tipo de valor que se intenta devolver y el tipo de la funcion no coincide.", this.linea, this.col);
+                }
+            }
+
+            if (resultado instanceof Continue || resultado instanceof Break) {
+                    return new Errores("SEMANTICO", "Mal manejor de Break o Continue.", this.linea, this.col);
+
             }
         }
         return null;

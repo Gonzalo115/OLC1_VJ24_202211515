@@ -6,6 +6,7 @@ package instrucciones;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
+import expresiones.ReturnValue;
 import java.util.LinkedList;
 import simbolo.*;
 
@@ -42,17 +43,16 @@ public class DoWhile extends Instruccion {
         }
 
         do {
-            //nuevo entorno
             var tabla_DoWhile_ins = new tablaSimbolos(tabla_DoWhile, tabla.getNombre() + "_DoWhileInst");
 
-            //ejecutar instrucciones
             for (var i : this.instrucciones) {
+
                 if (i instanceof Break) {
                     return null;
                 }
+
                 if (i instanceof Continue) {
                     break;
-                    //return null;
                 }
                 var resIns = i.interpretar(arbol, tabla_DoWhile_ins);
 
@@ -63,9 +63,13 @@ public class DoWhile extends Instruccion {
                 if (resIns instanceof Break) {
                     return null;
                 }
+
                 if (resIns instanceof Continue) {
                     break;
-                    //return null;
+                }
+
+                if (resIns instanceof ReturnValue) {
+                    return resIns;
                 }
             }
 

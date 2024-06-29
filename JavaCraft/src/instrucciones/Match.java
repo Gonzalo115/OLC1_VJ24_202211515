@@ -6,6 +6,7 @@ package instrucciones;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
+import expresiones.ReturnValue;
 import java.util.LinkedList;
 import simbolo.*;
 
@@ -69,6 +70,18 @@ public class Match extends Instruccion {
                     if (sol instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
                     }
+
+                    if (sol instanceof Continue) {
+                        return sol;
+                    }
+
+                    if (sol instanceof Break) {
+                        return sol;
+                    }
+
+                    if (sol instanceof ReturnValue) {
+                        return sol;
+                    }
                     break;
                 }
             }
@@ -79,6 +92,9 @@ public class Match extends Instruccion {
                 if (i instanceof Break) {
                     return i;
                 }
+                if (i instanceof Continue) {
+                    return i;
+                }
                 var resultado = i.interpretar(arbol, tabla_match_int);
 
                 if (resultado instanceof Errores) {
@@ -86,6 +102,14 @@ public class Match extends Instruccion {
                 }
 
                 if (resultado instanceof Break) {
+                    return resultado;
+                }
+
+                if (resultado instanceof Continue) {
+                    return resultado;
+                }
+
+                if (resultado instanceof ReturnValue) {
                     return resultado;
                 }
             }
@@ -106,6 +130,19 @@ public class Match extends Instruccion {
                     if (sol instanceof Errores) {
                         arbol.errores.add((Errores) resultado);
                     }
+
+                    if (sol instanceof Continue) {
+                        return sol;
+                    }
+
+                    if (sol instanceof Break) {
+                        return sol;
+                    }
+
+                    if (sol instanceof ReturnValue) {
+                        return sol;
+                    }
+
                     caso_existe = true;
                     break;
                 }
@@ -118,6 +155,10 @@ public class Match extends Instruccion {
                     if (i instanceof Break) {
                         return i;
                     }
+                    if (i instanceof Continue) {
+                        return i;
+                    }
+
                     var resultado = i.interpretar(arbol, tabla_match_int);
 
                     if (resultado instanceof Errores) {
@@ -127,12 +168,19 @@ public class Match extends Instruccion {
                     if (resultado instanceof Break) {
                         return resultado;
                     }
+
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof ReturnValue) {
+                        return resultado;
+                    }
                 }
             }
 
         }
 
-        
         arbol.addEntornos(tablaMatch);
         arbol.addEntornos(tabla_res);
 

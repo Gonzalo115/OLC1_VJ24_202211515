@@ -7,6 +7,7 @@ package instrucciones;
 import abstracto.Instruccion;
 import excepciones.Errores;
 import expresiones.Condicion;
+import expresiones.ReturnValue;
 
 import java.util.LinkedList;
 import simbolo.*;
@@ -46,6 +47,10 @@ public class Else_ extends Instruccion {
                 return resultado;
             }
             if (resultado instanceof Continue) {
+                return resultado;
+            }
+
+            if (resultado instanceof ReturnValue) {
                 return resultado;
             }
         }

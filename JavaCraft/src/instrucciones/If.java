@@ -6,12 +6,7 @@ package instrucciones;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
-import instrucciones.Break;
-import instrucciones.Break;
-import instrucciones.Continue;
-import instrucciones.Continue;
-import instrucciones.Else_;
-import instrucciones.Else_;
+import expresiones.ReturnValue;
 import java.util.LinkedList;
 import simbolo.*;
 
@@ -88,6 +83,14 @@ public class If extends Instruccion {
                     if (resultado instanceof Break) {
                         return resultado;
                     }
+
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof ReturnValue) {
+                        return resultado;
+                    }
                 }
             }
 
@@ -109,6 +112,14 @@ public class If extends Instruccion {
                     if (resultado instanceof Break) {
                         return resultado;
                     }
+
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof ReturnValue) {
+                        return resultado;
+                    }
                 }
             } else {
                 for (var i : this.instruccionesF) {
@@ -125,6 +136,14 @@ public class If extends Instruccion {
                     }
 
                     if (resultado instanceof Break) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof ReturnValue) {
                         return resultado;
                     }
                 }
@@ -147,6 +166,14 @@ public class If extends Instruccion {
                     if (resultado instanceof Break) {
                         return resultado;
                     }
+
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof ReturnValue) {
+                        return resultado;
+                    }
                 }
             } else {
                 for (var i : this.If_anidados) {
@@ -155,8 +182,6 @@ public class If extends Instruccion {
                     if (condF instanceof Errores) {
                         arbol.errores.add((Errores) condF);
                     }
-
-                   
 
                     if ((boolean) condF) {
                         var sol = i.interpretar(arbol, tabla_if2);
@@ -167,6 +192,10 @@ public class If extends Instruccion {
                             return sol;
                         }
                         if (sol instanceof Continue) {
+                            return sol;
+                        }
+
+                        if (sol instanceof ReturnValue) {
                             return sol;
                         }
                         break;
@@ -192,6 +221,14 @@ public class If extends Instruccion {
                     if (resultado instanceof Break) {
                         return resultado;
                     }
+
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof ReturnValue) {
+                        return resultado;
+                    }
                 }
             } else {
                 for (var i : this.If_anidados) {
@@ -200,7 +237,6 @@ public class If extends Instruccion {
                     if (condF instanceof Errores) {
                         arbol.errores.add((Errores) condF);
                     }
-
 
                     if ((boolean) condF) {
                         var sol = i.interpretar(arbol, tabla_if2);
@@ -213,6 +249,11 @@ public class If extends Instruccion {
                         if (sol instanceof Continue) {
                             return sol;
                         }
+
+                        if (sol instanceof ReturnValue) {
+                            return sol;
+                        }
+
                         encontrado = true;
                         break;
                     }
@@ -233,6 +274,14 @@ public class If extends Instruccion {
                     }
 
                     if (resultado instanceof Break) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof Continue) {
+                        return resultado;
+                    }
+
+                    if (resultado instanceof ReturnValue) {
                         return resultado;
                     }
                 }

@@ -29,6 +29,7 @@ import instrucciones.Match;
 import instrucciones.Casos;
 import instrucciones.AppendLista;
 import instrucciones.Metodo;
+import instrucciones.Funcion;
 import instrucciones.Start;
 
 //expresiones
@@ -49,6 +50,7 @@ import expresiones.Length;
 import expresiones.ToString;
 import expresiones.Find;
 import expresiones.Llamada;
+import expresiones.Return;
 
 
 
@@ -83,7 +85,7 @@ action code
 //terminales
 terminal String CADENA, CARACTER, ENTERO, DECIMAL, BOOLEANO, ID, BREAK, CONTINUE;
 
-terminal IMPRIMIR, VOID, INT, DOUBLE, BOOL, CHAR, STRINGG, LIST, VAR, CONST, NEW, START_WITH;
+terminal IMPRIMIR, VOID, INT, DOUBLE, BOOL, CHAR, STRINGG, LIST, VAR, CONST, NEW, START_WITH, RETURN;
 
 terminal APPEND, REMOVE, ROUND, LENGTH, TOSTRING, FIND;
 
@@ -111,10 +113,10 @@ nonterminal LinkedList<Else_> ELSE_IF_LIST;
 nonterminal Else_ ELSE_IF_CLAUSE;
 nonterminal Instruccion IMPRESION, INCREMENTO, DECREMENTO, SIF, CFOR, CWHILE, CDO_WHILE, SMATCH, ACTUALIZA_FOR;
 nonterminal Instruccion DECLARACION, DECLARACIONVECTOR, DECLARACIONLISTA, ASIGNACION, ASIGNACIONVECTOR;
-nonterminal Instruccion BREAKK, CONTINUEE;
+nonterminal Instruccion BREAKK, CONTINUEE, RETURNN;
 nonterminal Tipo TIPOS, TIPOS_LISTAS;
 nonterminal Instruccion EXPRESION, APPENDD, REMOVEE;
-nonterminal Instruccion METODO;
+nonterminal Instruccion METODO, FUNCION;
 nonterminal LinkedList<HashMap> PARAMS;
 nonterminal Instruccion START;
 nonterminal LinkedList<Instruccion> PARAMSCALL;
@@ -165,8 +167,10 @@ INSTRUCCION ::= IMPRESION:a             {:   RESULT=a;   :}
                 | APPENDD:a             {:   RESULT=a;   :}
                 | REMOVEE:a             {:   RESULT=a;   :}
                 | METODO:a              {:   RESULT=a;   :}
+                | FUNCION:a             {:   RESULT=a;   :}
                 | START:a               {:   RESULT=a;   :}
                 | LLAMADA:a             {:   RESULT=a;   :}
+                | RETURNN:a             {:   RESULT=a;   :}
                 | error FINCADENA
                 | error LLAVE2
 ;
@@ -261,14 +265,22 @@ CWHILE ::= WHILE PAR1 EXPRESION:a PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2  {:   RESUL
 CDO_WHILE ::= DO LLAVE1  INSTRUCCIONES:a LLAVE2 WHILE PAR1 EXPRESION:b PAR2 FINCADENA {:   RESULT = new DoWhile(a, b, aleft, aright);   :}
 ;
 
-BREAKK ::= BREAK:a FINCADENA      {:    RESULT = new Break(aleft, aright);     :}
+BREAKK ::= BREAK:a FINCADENA            {:    RESULT = new Break(aleft, aright);     :}
 ;
 
 CONTINUEE ::= CONTINUE:a FINCADENA      {:    RESULT = new Continue(aleft, aright);     :}
 ;
 
-METODO ::= VOID ID:a PAR1 PARAMS:c PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2   {:   RESULT=new Metodo(a, b, c, aleft, aright );   :}
-        |VOID ID:a PAR1 PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2              {:   RESULT=new Metodo(a, b, new LinkedList<HashMap>(), aleft, aright );   :}
+RETURNN ::= RETURN:a FINCADENA                {:    RESULT = new Return(aleft, aright);       :}     
+            |RETURN EXPRESION:a FINCADENA   {:    RESULT = new Return(a, aleft, aright);    :}        
+;
+
+METODO ::=  VOID ID:a PAR1 PARAMS:c PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2   {:   RESULT=new Metodo(a, b, c, aleft, aright );   :}
+            |VOID ID:a PAR1 PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2              {:   RESULT=new Metodo(a, b, new LinkedList<HashMap>(), aleft, aright );   :}
+;
+
+FUNCION ::=  TIPOS:t ID:a PAR1 PARAMS:c PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2   {:   RESULT=new Funcion(a, b, c, t, aleft, aright );   :}
+            |TIPOS:t ID:a PAR1 PAR2 LLAVE1 INSTRUCCIONES:b LLAVE2              {:   RESULT=new Funcion(a, b, new LinkedList<HashMap>(), t, aleft, aright );   :}
 ;
 
 
@@ -305,7 +317,7 @@ PARAMSCALL ::= PARAMSCALL:a COMA EXPRESION:e    {:  RESULT = a;
 
 
 
-TIPOS ::=   INT        {:   RESULT=new Tipo(tipoDato.ENTERO);       :}                                       
+TIPOS ::=   INT         {:   RESULT=new Tipo(tipoDato.ENTERO);      :}                                      
             |DOUBLE     {:   RESULT=new Tipo(tipoDato.DECIMAL);     :}  
             |BOOL       {:   RESULT=new Tipo(tipoDato.BOOLEANO);    :}  
             |CHAR       {:   RESULT=new Tipo(tipoDato.CARACTER);    :}  
@@ -362,4 +374,7 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | LENGTH PAR1 EXPRESION:a PAR2              {: RESULT = new Length(a, aleft, aright);   :}
             | TOSTRING PAR1 EXPRESION:a PAR2            {: RESULT = new ToString(a, aleft, aright);   :}
             | ID:a PUNTO FIND PAR1 EXPRESION:b PAR2     {: RESULT = new Find(a, b, aleft, aright);   :}
+
+            |ID:a PAR1 PARAMSCALL:b PAR2      {:  RESULT= new Llamada(a, b, aleft, aright);    :}
+            |ID:a PAR1 PAR2                   {:  RESULT= new Llamada(a, new LinkedList<Instruccion>(), aleft, aright);    :}
 ;

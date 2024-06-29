@@ -6,6 +6,7 @@ package simbolo;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
+import instrucciones.Funcion;
 import instrucciones.Metodo;
 import java.util.LinkedList;
 
@@ -90,6 +91,10 @@ public class Arbol {
         for (var i : this.funciones) {
             if (i instanceof Metodo metodo) {
                 if (metodo.id.equalsIgnoreCase(id)) {
+                    return i;
+                }
+            } else if (i instanceof Funcion funcion) {
+                if (funcion.id.endsWith(id)){
                     return i;
                 }
             }

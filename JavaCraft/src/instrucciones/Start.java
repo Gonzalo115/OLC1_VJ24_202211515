@@ -48,7 +48,7 @@ public class Start extends Instruccion {
                 var valor = this.parametros.get(i);
                 var tipo2 = (Tipo) metodo.parametros.get(i).get("tipo");
 
-                var declaracionParametro = new Declaracion(false, identificador, tipo2, valor, this.linea, this.col);
+                var declaracionParametro = new Declaracion(true, identificador, tipo2, valor, this.linea, this.col);
 
                 var resultadoDeclaracion = declaracionParametro.interpretar(arbol, newTabla);
 

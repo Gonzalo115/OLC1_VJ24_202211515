@@ -6,6 +6,7 @@ package instrucciones;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
+import expresiones.ReturnValue;
 import java.util.LinkedList;
 import simbolo.*;
 
@@ -50,20 +51,7 @@ public class While extends Instruccion {
                 }
                 if (i instanceof Continue) {
                     break;
-                    //return null;
                 }
-                /*
-                if (i instanceof While && !(boolean) this.condicion.interpretar(arbol, tabla_While)) {
-                    var resIns = i.interpretar(arbol, tabla_While_ins);
-                    tabla_res = tabla_While_ins;
-                    if (resIns instanceof Break) {
-                        return null;
-                    }
-                    if (resIns instanceof Continue) {
-                        break;
-                        //return null;
-                    }
-                }*/
 
                 var resIns = i.interpretar(arbol, tabla_While_ins);
 
@@ -74,9 +62,13 @@ public class While extends Instruccion {
                 if (resIns instanceof Break) {
                     return null;
                 }
+                
                 if (resIns instanceof Continue) {
                     break;
-                    //return null;
+                }
+                
+                if (resIns instanceof ReturnValue) {
+                    return resIns;
                 }
             }
 

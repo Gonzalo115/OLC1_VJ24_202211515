@@ -8,76 +8,77 @@ package analisis;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int MAS_MAS = 53;
-  public static final int PAR2 = 39;
-  public static final int DOSPUNTOS = 35;
-  public static final int PAR1 = 38;
-  public static final int primero = 66;
-  public static final int GUIONBAJO = 45;
+  public static final int MAS_MAS = 54;
+  public static final int PAR2 = 40;
+  public static final int DOSPUNTOS = 36;
+  public static final int PAR1 = 39;
+  public static final int primero = 67;
+  public static final int GUIONBAJO = 46;
   public static final int CONST = 19;
   public static final int CHAR = 15;
-  public static final int LLAVE2 = 42;
-  public static final int FIND = 27;
-  public static final int REMOVE = 23;
-  public static final int LLAVE1 = 41;
+  public static final int LLAVE2 = 43;
+  public static final int FIND = 28;
+  public static final int REMOVE = 24;
+  public static final int LLAVE1 = 42;
   public static final int IMPRIMIR = 10;
   public static final int STRINGG = 16;
   public static final int ENTERO = 4;
-  public static final int CAS = 55;
-  public static final int XOR = 65;
-  public static final int MENOS_MENOS = 54;
+  public static final int CAS = 56;
+  public static final int XOR = 66;
+  public static final int MENOS_MENOS = 55;
   public static final int DOUBLE = 13;
   public static final int CONTINUE = 9;
   public static final int INT = 12;
-  public static final int ASTERISCO = 52;
-  public static final int FOR = 30;
-  public static final int MATCH = 33;
-  public static final int AND = 64;
-  public static final int NOT = 62;
-  public static final int FINCADENA = 34;
-  public static final int IGUAL = 40;
-  public static final int APPEND = 22;
+  public static final int ASTERISCO = 53;
+  public static final int FOR = 31;
+  public static final int MATCH = 34;
+  public static final int AND = 65;
+  public static final int NOT = 63;
+  public static final int FINCADENA = 35;
+  public static final int IGUAL = 41;
+  public static final int APPEND = 23;
   public static final int CARACTER = 3;
-  public static final int OR = 63;
-  public static final int CORCHETE2 = 44;
-  public static final int CORCHETE1 = 43;
+  public static final int OR = 64;
+  public static final int CORCHETE2 = 45;
+  public static final int CORCHETE1 = 44;
   public static final int BOOL = 14;
-  public static final int UMENOS = 48;
-  public static final int IF = 28;
-  public static final int IGUAL_IGUAL = 56;
+  public static final int UMENOS = 49;
+  public static final int IF = 29;
+  public static final int IGUAL_IGUAL = 57;
   public static final int ID = 7;
   public static final int EOF = 0;
   public static final int DECIMAL = 5;
-  public static final int DOBLE_ASTERISCO = 51;
+  public static final int DOBLE_ASTERISCO = 52;
+  public static final int RETURN = 22;
   public static final int NEW = 20;
   public static final int error = 1;
-  public static final int COMA = 37;
+  public static final int COMA = 38;
   public static final int CADENA = 2;
-  public static final int MENOS = 47;
-  public static final int MENOR = 58;
+  public static final int MENOS = 48;
+  public static final int MENOR = 59;
   public static final int BREAK = 8;
-  public static final int TOSTRING = 26;
+  public static final int TOSTRING = 27;
   public static final int VOID = 11;
-  public static final int MAYOR = 60;
-  public static final int cuarto = 69;
-  public static final int segundo = 67;
-  public static final int ELSE = 29;
-  public static final int PUNTO = 36;
-  public static final int PORCENTUAL = 50;
+  public static final int MAYOR = 61;
+  public static final int cuarto = 70;
+  public static final int segundo = 68;
+  public static final int ELSE = 30;
+  public static final int PUNTO = 37;
+  public static final int PORCENTUAL = 51;
   public static final int START_WITH = 21;
-  public static final int WHILE = 31;
+  public static final int WHILE = 32;
   public static final int LIST = 17;
-  public static final int MAYOR_IGUAL = 61;
-  public static final int tercero = 68;
+  public static final int MAYOR_IGUAL = 62;
+  public static final int tercero = 69;
   public static final int BOOLEANO = 6;
-  public static final int MENOR_IGUAL = 59;
-  public static final int DIVISION = 49;
-  public static final int NOT_IGUAL = 57;
+  public static final int MENOR_IGUAL = 60;
+  public static final int DIVISION = 50;
+  public static final int NOT_IGUAL = 58;
   public static final int VAR = 18;
-  public static final int LENGTH = 25;
-  public static final int ROUND = 24;
-  public static final int DO = 32;
-  public static final int MAS = 46;
+  public static final int LENGTH = 26;
+  public static final int ROUND = 25;
+  public static final int DO = 33;
+  public static final int MAS = 47;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -101,6 +102,7 @@ public class sym {
   "CONST",
   "NEW",
   "START_WITH",
+  "RETURN",
   "APPEND",
   "REMOVE",
   "ROUND",

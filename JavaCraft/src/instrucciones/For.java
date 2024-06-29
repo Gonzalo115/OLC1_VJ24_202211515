@@ -6,6 +6,7 @@ package instrucciones;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
+import expresiones.ReturnValue;
 import java.util.LinkedList;
 import simbolo.*;
 
@@ -63,7 +64,6 @@ public class For extends Instruccion {
                 }
                 if (i instanceof Continue) {
                     break;
-                    //return null;
                 }
                 var resIns = i.interpretar(arbol, tabla_for_ins);
 
@@ -76,7 +76,9 @@ public class For extends Instruccion {
                 }
                 if (resIns instanceof Continue) {
                     break;
-                    //return null;
+                }
+                if (resIns instanceof ReturnValue){
+                    return resIns;
                 }
             }
 
