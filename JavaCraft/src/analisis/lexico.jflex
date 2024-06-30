@@ -42,7 +42,7 @@ BLANCOS=[\ \r\t\f\n]+
 ENTERO=[0-9]+
 DECIMAL=[0-9]+"."[0-9]+
 BOOLEANO = ((true)|(false)) 
-CARACTER= ('[^\ \r\t\f\n]')
+CARACTER= ('[^\r\t\f\n]')
 ID=[a-zA-z][a-zA-Z0-9_]*
 
 
@@ -87,6 +87,7 @@ ID=[a-zA-z][a-zA-Z0-9_]*
 <YYINITIAL> "Find"      {return new Symbol(sym.FIND, yyline, yycolumn,yytext());}
 <YYINITIAL> "start_with"    {return new Symbol(sym.START_WITH, yyline, yycolumn,yytext());}
 <YYINITIAL> "return"    {return new Symbol(sym.RETURN, yyline, yycolumn,yytext());}
+<YYINITIAL> "struct"    {return new Symbol(sym.STRUCT, yyline, yycolumn,yytext());}
 
 
 

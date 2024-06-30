@@ -55,6 +55,7 @@ public class Funcion extends Instruccion {
 
             }
         }
+        arbol.addEntornos(tabla);
         return null;
     }
 }

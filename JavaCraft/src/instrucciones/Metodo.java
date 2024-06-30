@@ -31,17 +31,26 @@ public class Metodo extends Instruccion {
     @Override
     public Object interpretar(Arbol arbol, tablaSimbolos tabla) {
         for (var i : this.instrucciones) {
+
+            if(i == null){
+                continue;
+            }
             
             var resultado = i.interpretar(arbol, tabla);
             if (resultado instanceof Errores) {
                 arbol.errores.add((Errores) resultado);
-            }        
-                    
+            }
 
             if (resultado instanceof ReturnValue returnValor) {
-                return new Errores("SEMANTICO", "Un metodo no puede devolver un valor.", this.linea, this.col);
+
+                if (returnValor.tipo.getTipo() != tipoDato.VOID) {
+                    return new Errores("SEMANTICO", "Un metodo no puede devolver un valor.", this.linea, this.col);
+                }else{
+                    return null;
+                }
             }
         }
+        arbol.addEntornos(tabla);
         return null;
     }
 }

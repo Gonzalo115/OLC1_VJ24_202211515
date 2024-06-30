@@ -31,6 +31,11 @@ import instrucciones.AppendLista;
 import instrucciones.Metodo;
 import instrucciones.Funcion;
 import instrucciones.Start;
+import instrucciones.Struct;
+import instrucciones.Atributos;
+import instrucciones.InstanciarStruct;
+import instrucciones.AtributosAux;
+
 
 //expresiones
 import expresiones.Nativo;
@@ -51,6 +56,7 @@ import expresiones.ToString;
 import expresiones.Find;
 import expresiones.Llamada;
 import expresiones.Return;
+import expresiones.AccesoStruct;
 
 
 
@@ -89,7 +95,7 @@ terminal IMPRIMIR, VOID, INT, DOUBLE, BOOL, CHAR, STRINGG, LIST, VAR, CONST, NEW
 
 terminal APPEND, REMOVE, ROUND, LENGTH, TOSTRING, FIND;
 
-terminal IF, ELSE, FOR, WHILE, DO, MATCH; 
+terminal IF, ELSE, FOR, WHILE, DO, MATCH, STRUCT; 
 
 terminal FINCADENA, DOSPUNTOS, PUNTO, COMA, PAR1, PAR2, IGUAL, LLAVE1, LLAVE2, CORCHETE1, CORCHETE2, GUIONBAJO;
 
@@ -121,6 +127,10 @@ nonterminal LinkedList<HashMap> PARAMS;
 nonterminal Instruccion START;
 nonterminal LinkedList<Instruccion> PARAMSCALL;
 nonterminal Instruccion LLAMADA;
+nonterminal Instruccion STRUCTS, INICIALIZACION_STRUCT;
+nonterminal HashMap<String, Atributos> LISTA_ATRIBUTOS;
+nonterminal HashMap<String, Instruccion> LISTA_VALORES_INICIALIZAR , LISTA_VALORES_VALORES;
+
 
 precedence nonassoc cuarto;
 precedence nonassoc tercero;
@@ -168,9 +178,11 @@ INSTRUCCION ::= IMPRESION:a             {:   RESULT=a;   :}
                 | REMOVEE:a             {:   RESULT=a;   :}
                 | METODO:a              {:   RESULT=a;   :}
                 | FUNCION:a             {:   RESULT=a;   :}
+                | STRUCTS:a             {:   RESULT=a;   :}
                 | START:a               {:   RESULT=a;   :}
                 | LLAMADA:a             {:   RESULT=a;   :}
                 | RETURNN:a             {:   RESULT=a;   :}
+                | INICIALIZACION_STRUCT:a  {:   RESULT=a;   :} 
                 | error FINCADENA
                 | error LLAVE2
 ;
@@ -299,6 +311,54 @@ PARAMS ::= PARAMS:a COMA TIPOS:b ID:c   {:
                                         :}
 ;
 
+STRUCTS ::= STRUCT LLAVE1 LISTA_ATRIBUTOS:b LLAVE2 ID:a FINCADENA       {:      RESULT = new Struct(a, b, aleft, aright );       :}      
+;
+
+LISTA_ATRIBUTOS ::= LISTA_ATRIBUTOS:a ID:b DOSPUNTOS TIPOS:c FINCADENA    {:  RESULT = a;   
+                                                                            RESULT.put(b, new Atributos(b, c, aleft, aright));
+                                                                        :}
+                    |LISTA_ATRIBUTOS:a ID:b DOSPUNTOS ID:c FINCADENA    {:  RESULT = a;   
+                                                                            RESULT.put(b, new Atributos(b, c, aleft, aright));
+                                                                        :}
+
+                    |ID:a DOSPUNTOS TIPOS:b FINCADENA                   {:  RESULT = new HashMap<String, Atributos>(); 
+                                                                            RESULT.put(a, new Atributos(a, b, aleft, aright));
+                                                                        :}
+                    |ID:a DOSPUNTOS ID:b FINCADENA                      {:  RESULT = new HashMap<String, Atributos>(); 
+                                                                            RESULT.put(a, new Atributos(a, b, aleft, aright));
+                                                                        :}
+;
+
+
+INICIALIZACION_STRUCT ::= VAR ID:a DOSPUNTOS ID:b IGUAL LLAVE1 LISTA_VALORES_INICIALIZAR:c LLAVE2 FINCADENA     {:      RESULT = new InstanciarStruct(a, b, true, c, aleft, aright );       :}     
+                        | CONST ID:a DOSPUNTOS ID:b IGUAL LLAVE1 LISTA_VALORES_INICIALIZAR:c LLAVE2 FINCADENA   {:      RESULT = new InstanciarStruct(a, b, false, c, aleft, aright );       :}
+;
+
+LISTA_VALORES_INICIALIZAR ::= LISTA_VALORES_INICIALIZAR:a COMA ID:b DOSPUNTOS EXPRESION:c                                   {:  RESULT = a;   
+                                                                                                                                RESULT.put(b, c);
+                                                                                                                            :}
+                            |LISTA_VALORES_INICIALIZAR:a COMA ID:b DOSPUNTOS LLAVE1 LISTA_VALORES_VALORES:c LLAVE2       {:  RESULT = a;   
+                                                                                                                                RESULT.put(b, new AtributosAux(b, c, aleft, aright));
+                                                                                                                            :}
+                            |ID:a DOSPUNTOS EXPRESION:b                                                                     {:  RESULT = new HashMap<String, Instruccion>(); 
+                                                                                                                                RESULT.put(a, b);
+                                                                                                                            :}
+                            |ID:a DOSPUNTOS LLAVE1 LISTA_VALORES_VALORES:b LLAVE2                                       {:  RESULT = new HashMap<String, Instruccion>(); 
+                                                                                                                                RESULT.put(a, new AtributosAux(a, b, aleft, aright));
+                                                                                                                            :}
+
+; 
+
+
+
+LISTA_VALORES_VALORES ::= LISTA_VALORES_VALORES:a COMA ID:b DOSPUNTOS EXPRESION:c                {:  RESULT = a;   
+                                                                                                    RESULT.put(b, c);
+                                                                                                :}                
+                        | ID:a DOSPUNTOS EXPRESION:b                                            {:  RESULT = new HashMap<String, Instruccion>(); 
+                                                                                                    RESULT.put(a, b);
+                                                                                                :}
+;
+
 START ::=  START_WITH ID:a PAR1 PARAMSCALL:b PAR2 FINCADENA     {:   RESULT = new Start(a, b, aleft, aright );   :}
             | START_WITH ID:a PAR1 PAR2 FINCADENA                  {:   RESULT = new Start(a, new LinkedList<Instruccion>(), aleft, aright );   :}
 ;
@@ -314,7 +374,6 @@ PARAMSCALL ::= PARAMSCALL:a COMA EXPRESION:e    {:  RESULT = a;
                                                     RESULT.add(a);
                                                 :}
 ;
-
 
 
 TIPOS ::=   INT         {:   RESULT=new Tipo(tipoDato.ENTERO);      :}                                      
@@ -360,6 +419,9 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | CARACTER:a                                {: RESULT = new Nativo(a, new Tipo(tipoDato.CARACTER), aleft, aright); :}
             | BOOLEANO:a                                {: RESULT = new Nativo(Boolean.valueOf(((String) a).toLowerCase()), new Tipo(tipoDato.BOOLEANO), aleft, aright); :}
 
+           
+            | LENGTH PAR1 EXPRESION:a PAR2              {: RESULT = new Length(a, aleft, aright);   :}
+
             | ID:a                                      {: RESULT = new AccesoVC(a, aleft, aright);   :}
 
             | ID:a CORCHETE1 EXPRESION:b CORCHETE2      {: RESULT = new AccesoVector(a, b, aleft, aright);   :}
@@ -371,10 +433,18 @@ EXPRESION ::= MENOS EXPRESION:a                         {: RESULT = new Aritmeti
             | ID:a PUNTO REMOVE PAR1 EXPRESION:b PAR2   {: RESULT = new RemoveLista(a, b, aleft, aright);   :}    
 
             | ROUND PAR1 EXPRESION:a PAR2               {: RESULT = new Round(a, aleft, aright);   :}   
-            | LENGTH PAR1 EXPRESION:a PAR2              {: RESULT = new Length(a, aleft, aright);   :}
+
+            
             | TOSTRING PAR1 EXPRESION:a PAR2            {: RESULT = new ToString(a, aleft, aright);   :}
             | ID:a PUNTO FIND PAR1 EXPRESION:b PAR2     {: RESULT = new Find(a, b, aleft, aright);   :}
 
+
             |ID:a PAR1 PARAMSCALL:b PAR2      {:  RESULT= new Llamada(a, b, aleft, aright);    :}
             |ID:a PAR1 PAR2                   {:  RESULT= new Llamada(a, new LinkedList<Instruccion>(), aleft, aright);    :}
+
+
+            | ID:a PUNTO ID:b PUNTO ID:c                  {:  RESULT= new AccesoStruct(a, b, c, aleft, aright);    :}
+            | ID:a PUNTO ID:b                             {:  RESULT= new AccesoStruct(a, b, aleft, aright);    :}
+
+            
 ;

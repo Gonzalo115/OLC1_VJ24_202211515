@@ -6,8 +6,11 @@ package simbolo;
 
 import abstracto.Instruccion;
 import excepciones.Errores;
+import instrucciones.Atributos;
 import instrucciones.Funcion;
 import instrucciones.Metodo;
+import instrucciones.Struct;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -22,6 +25,7 @@ public class Arbol {
     public LinkedList<Errores> errores;
     public LinkedList<tablaSimbolos> entornos = new LinkedList<>();
     public LinkedList<Instruccion> funciones;
+    public HashMap<String, Struct> Structs;
 
     public Arbol(LinkedList<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
@@ -29,6 +33,7 @@ public class Arbol {
         this.tablaGlobal = new tablaSimbolos();
         this.errores = new LinkedList<>();
         this.funciones = new LinkedList<>();
+        this.Structs = new HashMap<>();
     }
 
     public LinkedList<Instruccion> getInstrucciones() {
@@ -94,10 +99,27 @@ public class Arbol {
                     return i;
                 }
             } else if (i instanceof Funcion funcion) {
-                if (funcion.id.endsWith(id)){
+                if (funcion.id.endsWith(id)) {
                     return i;
                 }
             }
+        }
+        return null;
+    }
+
+    public boolean setStruct(Struct Struct) {
+        Struct busqueda = (Struct) this.Structs.get(Struct.id.toLowerCase());
+        if (busqueda == null) {
+            this.Structs.put(Struct.id.toLowerCase(), Struct);
+            return true;
+        }
+        return false;
+    }
+
+    public Struct getStruct(String id) {
+        Struct busqueda = (Struct) this.Structs.get(id.toLowerCase());
+        if (busqueda != null) {
+            return busqueda;
         }
         return null;
     }

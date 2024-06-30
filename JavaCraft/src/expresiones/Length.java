@@ -16,10 +16,17 @@ import simbolo.*;
 public class Length extends Instruccion {
 
     private Instruccion expresion;
+    private Instruccion pos;
 
     public Length(Instruccion expresion, int linea, int col) {
         super(new Tipo(tipoDato.ENTERO), linea, col);
         this.expresion = expresion;
+    }
+
+    public Length(Instruccion expresion, Instruccion pos, int linea, int col) {
+        super(new Tipo(tipoDato.ENTERO), linea, col);
+        this.expresion = expresion;
+        this.pos = pos;
     }
 
     @Override
@@ -36,6 +43,21 @@ public class Length extends Instruccion {
             return list.size();
         } else if (this.expresion.tipo.getTipo() == tipoDato.VECTOR_2) {
             LinkedList<Object> list = (LinkedList<Object>) exp;
+
+            if (pos != null) {
+                var posV = this.pos.interpretar(arbol, tabla);
+                if (posV instanceof Errores) {
+                    return posV;
+                }
+                if (this.pos.tipo.getTipo() != tipoDato.ENTERO) {
+                    return new Errores("SEMANTICA", "Para ubicarte en una posicion del arreglo necesitas un ENTERO", this.linea, this.col);
+                }
+                LinkedList<Object> list_list = (LinkedList<Object>) list.get((int) posV);
+                
+                return list_list.size();
+
+            }
+
             return list.size();
         } else {
             return new Errores("SEMANTICA", "Para la funcion Length se necesita una Cadena, lista o vector", this.linea, this.col);
