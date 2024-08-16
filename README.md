@@ -1,5 +1,9 @@
 # Universidad De San Carlos de Gutatemala
-# JavaCraft
-## Organización de Lenguajes y Compiladores 1
+
+LABORATORIO MANEJO E IMPLEMENTACION DE ARCHIVOS
+
+Seccion: B
 
 Nombre: Gonzalo Fernando Pérez Cazún
+
+Carné: 202211515
